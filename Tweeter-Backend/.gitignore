@@ -1,0 +1,5 @@
+.env
+requests
+node_modules
+coverage
+dist
