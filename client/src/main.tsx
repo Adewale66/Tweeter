@@ -13,6 +13,7 @@ import MobileLogin from "./pages/MobileLogin.tsx";
 import Home from "./pages/Home.tsx";
 import store from "./store";
 import { Provider } from "react-redux";
+import { Toaster } from "react-hot-toast";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <Provider store={store}>
     <React.StrictMode>
+      <Toaster />
       <RouterProvider router={router} />
       <BrowserRouter />
     </React.StrictMode>

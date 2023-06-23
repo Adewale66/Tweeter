@@ -13,14 +13,29 @@ import {
   IconUser,
   IconLogout,
 } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
+import { useLogoutMutation } from "../slices/api/logApiSlice";
+import { removeCredentials } from "../slices/authSlice";
+import { useDispatch } from "react-redux";
+import { toast } from "react-hot-toast/headless";
+import { AppDispatch } from "../store";
 
-const User = () => {
+const User = ({ username }: { username: string }) => {
+  const dispatch: AppDispatch = useDispatch();
+  const [logout] = useLogoutMutation();
+
+  async function logoutUser() {
+    try {
+      await logout();
+      dispatch(removeCredentials());
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
+  }
   return (
     <Popover position="bottom-end" radius="md" width={200}>
       <Flex gap="xs" align="center" justify="center">
         <Avatar radius="md" size="md" src={null} />
-        <Text>Adewale kujore</Text>
+        <Text>{username}</Text>
         <Popover.Target>
           <Button variant="subtle" color="gray" size="xs">
             <IconChevronDown />
@@ -31,17 +46,22 @@ const User = () => {
         <Flex direction="column" gap="md">
           <Group position="left">
             <IconUser />
-            <Text>My Profile</Text>
+            <Text style={{ cursor: "pointer" }}>My Profile</Text>
           </Group>
 
           <Group position="left">
             <IconSettings />
-            <Text>Settings</Text>
+            <Text style={{ cursor: "pointer" }}>Settings</Text>
           </Group>
           <Divider />
           <Group position="left">
             <IconLogout color="red" />
-            <Text color="red" weight={500}>
+            <Text
+              color="red"
+              weight={500}
+              style={{ cursor: "pointer" }}
+              onClick={logoutUser}
+            >
               {" "}
               Logout
             </Text>

@@ -6,21 +6,29 @@ import {
   Text,
   Paper,
   Group,
-  PaperProps,
   Button,
   Anchor,
   Stack,
+  LoadingOverlay,
 } from "@mantine/core";
+import { useLoginMutation } from "../slices/api/logApiSlice";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../slices/authSlice";
+import { useLocation, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useRegisterUserMutation } from "../slices/api/userApiSlice";
 
-export function AuthenticationForm(props: PaperProps) {
+export function AuthenticationForm({ close }: { close: () => void }) {
   const [type, toggle] = useToggle(["login", "register"]);
+  let visible = false;
+  const navigate = useNavigate();
+
   const form = useForm({
     initialValues: {
       username: "",
       name: "",
       password: "",
     },
-
     validate: {
       password: (val) =>
         val.length <= 1
@@ -29,13 +37,40 @@ export function AuthenticationForm(props: PaperProps) {
     },
   });
 
+  const [login, { isLoading }] = useLoginMutation();
+  const [register, { isLoading: isLoading2 }] = useRegisterUserMutation();
+  const dispatch = useDispatch();
+  const { pathname } = useLocation();
+
   async function handleSubmit() {
-    const { username, password } = form.values;
-    console.log(username, password);
+    const { name, username, password } = form.values;
+    if (type === "login") {
+      try {
+        const res = await login({ username, password }).unwrap();
+        dispatch(setCredentials(res));
+      } catch (error) {
+        toast.error("Invalid username or password");
+      }
+    } else {
+      try {
+        await register({ name, username, password });
+        const res = await login({ username, password }).unwrap();
+        dispatch(setCredentials(res));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    form.reset();
+    if (pathname === "/login") navigate("/");
+    else close();
   }
+  if (isLoading) visible = true;
+  if (isLoading2) visible = true;
 
   return (
-    <Paper radius="md" p="md" {...props}>
+    <Paper radius="md" p="md">
+      <LoadingOverlay visible={visible} overlayBlur={2} />
       <Text size="lg" weight={500}>
         Welcome to Tweeter!
       </Text>
@@ -59,7 +94,7 @@ export function AuthenticationForm(props: PaperProps) {
           <TextInput
             required
             label="Username"
-            placeholder="The Big one"
+            placeholder="Username"
             value={form.values.username}
             onChange={(event) =>
               form.setFieldValue("username", event.currentTarget.value)

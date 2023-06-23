@@ -1,5 +1,11 @@
+import Tweet from "../components/Tweet";
+
 const Home = () => {
-  return <div>Home</div>;
+  return (
+    <div>
+      <Tweet />
+    </div>
+  );
 };
 
 export default Home;

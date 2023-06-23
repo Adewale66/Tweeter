@@ -20,6 +20,11 @@ import { Link } from "react-router-dom";
 import LoginModal from "./Login";
 import User from "./user";
 import { ThemeToggle } from "./ChangeTheme";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store";
+import toast from "react-hot-toast";
+import { useLogoutMutation } from "../slices/api/logApiSlice";
+import { removeCredentials } from "../slices/authSlice";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -92,11 +97,23 @@ const useStyles = createStyles((theme) => ({
 
 export function HeaderMegaMenu() {
   const [opened, { open, close }] = useDisclosure(false);
+  const user = useSelector((state: RootState) => state.auth.userInfo);
 
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
   const { classes, theme } = useStyles();
   const { colorScheme } = useMantineColorScheme();
+  const dispatch: AppDispatch = useDispatch();
+  const [logout] = useLogoutMutation();
+
+  async function logoutUser() {
+    try {
+      await logout();
+      dispatch(removeCredentials());
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
+  }
 
   return (
     <Box>
@@ -121,10 +138,13 @@ export function HeaderMegaMenu() {
           </Group>
 
           <Group className={classes.hiddenMobile}>
-            <User />
-            {/* <Button onClick={open} size="md">
-              Log in
-            </Button> */}
+            {user ? (
+              <User username={user.username} />
+            ) : (
+              <Button onClick={open} size="md">
+                Log in
+              </Button>
+            )}
           </Group>
 
           <Burger
@@ -154,32 +174,48 @@ export function HeaderMegaMenu() {
           <Link to={"/"} className={classes.link}>
             Home
           </Link>
-          <Link to={"/"} className={classes.link}>
-            Profile
-          </Link>
+          {user && (
+            <Link to={"/profile"} className={classes.link}>
+              Profile
+            </Link>
+          )}
+
           <Link to={"/explore"} className={classes.link}>
             Explore
           </Link>
           <Link to={"/bookmarks"} className={classes.link}>
             Bookmarks
           </Link>
-          <Link to={"/bookmarks"} className={classes.link}>
-            Settings
-          </Link>
-          <Link to={"/bookmarks"} className={classes.link}>
-            <Text color="red">Logout</Text>
-          </Link>
+
+          {user && (
+            <Link to={"/settings"} className={classes.link}>
+              Settings
+            </Link>
+          )}
+
+          {user && (
+            <Text className={classes.link} onClick={logoutUser}>
+              Logout
+            </Text>
+          )}
 
           <Divider
             my="sm"
             color={theme.colorScheme === "dark" ? "dark.5" : "gray.1"}
           />
 
-          {/* <Group position="center" grow pb="xl" px="md">
-            <Button component={Link} to={"/login"} size="md" variant="outline">
-              Log in
-            </Button>
-          </Group> */}
+          {!user && (
+            <Group position="center" grow pb="xl" px="md">
+              <Button
+                component={Link}
+                to={"/login"}
+                size="md"
+                variant="outline"
+              >
+                Log in
+              </Button>
+            </Group>
+          )}
         </ScrollArea>
       </Drawer>
     </Box>

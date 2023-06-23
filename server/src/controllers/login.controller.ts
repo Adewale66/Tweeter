@@ -27,17 +27,17 @@ const logUser = async (req, res) => {
   };
 
   const token = jwt.sign(tokenUser, process.env.TOKEN_SECRET, {
-    expiresIn: 60 * 60,
+    expiresIn: "1h",
   });
 
   res
+    .status(200)
     .cookie("access_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 60 * 60,
+      sameSite: "lax",
+      maxAge: 60 * 60 * 60,
     })
-    .status(200)
     .json({
       id: user._id,
       name: user.name,
@@ -47,13 +47,13 @@ const logUser = async (req, res) => {
 
 /**
  * @desc log a user out
- * @route POST /logout
+ * @route GET /logout
  * @access Private
  */
 
 const logUserOut = async (req, res) => {
   res
-    .cookie("access_token", "", {
+    .clearCookie("access_token", {
       httpOnly: true,
       expires: new Date(0),
     })
