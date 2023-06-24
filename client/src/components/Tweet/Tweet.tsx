@@ -6,21 +6,32 @@ import {
   Image,
   Flex,
   Divider,
+  createStyles,
 } from "@mantine/core";
 
+import Interact from "./Interact";
+import Reply from "./Reply";
+import Comments from "./Comments";
+
+const useStyles = createStyles((theme) => ({
+  container: {
+    backgroundColor:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[6]
+        : theme.colors.gray[0],
+    padding: "1rem",
+    borderRadius: "0.5rem",
+    color: theme.colorScheme === "dark" ? theme.white : theme.black,
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.5rem",
+    marginBottom: "2rem",
+  },
+}));
 const Tweet = () => {
+  const { classes, theme } = useStyles();
   return (
-    <Container
-      sx={() => ({
-        backgroundColor: "white",
-        padding: "1rem",
-        color: "black",
-        display: "flex",
-        flexDirection: "column",
-        gap: "0.5rem",
-      })}
-      size="xs"
-    >
+    <Container className={classes.container} size="xs">
       <Group>
         <Avatar
           src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&w=1000&q=80"
@@ -53,7 +64,11 @@ const Tweet = () => {
           234 Saved
         </Text>
       </Flex>
-      <Divider />
+      <Divider color={theme.colorScheme === "dark" ? "gray.7" : "gray.3"} />
+      <Interact />
+      <Divider color={theme.colorScheme === "dark" ? "gray.7" : "gray.3"} />
+      <Reply />
+      <Comments />
     </Container>
   );
 };

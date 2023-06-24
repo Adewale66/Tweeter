@@ -1,8 +1,8 @@
-import Tweet from "../components/Tweet";
+import Tweet from "../components/Tweet/Tweet";
 
 const Home = () => {
   return (
-    <div>
+    <div className="home">
       <Tweet />
     </div>
   );

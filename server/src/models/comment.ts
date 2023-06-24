@@ -1,11 +1,13 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-const commentSchema = new Schema({
-  comment: String,
-  madeBy: { type: Schema.Types.ObjectId, ref: "User" },
-  timeMade: Date,
-});
+const commentSchema = new Schema(
+  {
+    comment: String,
+    madeBy: { type: Schema.Types.ObjectId, ref: "User" },
+  },
+  { timestamps: true }
+);
 
 commentSchema.set("toJSON", {
   transform: (document, returnedObject) => {

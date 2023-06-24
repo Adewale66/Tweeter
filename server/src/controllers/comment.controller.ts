@@ -20,7 +20,6 @@ const makeComment = async (req, res) => {
     return res.status(404).json({ message: "Tweet not found" });
   const NewComment = new Comment({
     madeBy: req.user.id,
-    timeMade: new Date(),
     comment: comment,
   });
   await NewComment.save();

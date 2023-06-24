@@ -1,33 +1,36 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-const tweetSchema = new Schema({
-  tweet: String,
-  likes: {
-    type: Number,
-    default: 0,
-  },
-  retweets: {
-    type: Number,
-    default: 0,
-  },
-  saved: {
-    type: Number,
-    default: 0,
-  },
-  comments: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Comment",
+const tweetSchema = new Schema(
+  {
+    tweet: String,
+    likes: {
+      type: Number,
+      default: 0,
     },
-  ],
-  madeBy: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
+    retweets: {
+      type: Number,
+      default: 0,
+    },
+    saved: {
+      type: Number,
+      default: 0,
+    },
+    comments: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Comment",
+      },
+    ],
+    madeBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+
+    image: String,
   },
-  timeMade: Date,
-  image: String,
-});
+  { timestamps: true }
+);
 
 tweetSchema.set("toJSON", {
   transform: (document, returnedObject) => {

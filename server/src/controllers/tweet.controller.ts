@@ -17,7 +17,6 @@ const createTweet = async (req, res) => {
     retweets: 0,
     saved: 0,
     madeBy: req.user.id,
-    timeMade: new Date(),
   });
   const saved = await newTweet.save();
   const user = await User.findById(req.user.id);

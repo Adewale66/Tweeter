@@ -15,7 +15,6 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import logo from "../assets/tweeter.svg";
 import lightLogo from "../assets/tweeter-light.svg";
-import { memo } from "react";
 import { Link } from "react-router-dom";
 import LoginModal from "./Login";
 import User from "./user";
@@ -221,5 +220,3 @@ export function HeaderMegaMenu() {
     </Box>
   );
 }
-
-export const MemoizedHeaderMegaMenu = memo(HeaderMegaMenu);
