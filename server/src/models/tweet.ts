@@ -28,6 +28,7 @@ const tweetSchema = new Schema(
     },
 
     image: String,
+    preference: String,
   },
   { timestamps: true }
 );

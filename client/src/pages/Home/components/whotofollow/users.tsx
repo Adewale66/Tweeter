@@ -12,11 +12,7 @@ import { IconUserPlus } from "@tabler/icons-react";
 
 const useStyles = createStyles((theme) => ({
   container: {
-    padding: "1rem",
-    borderRadius: "0.5rem",
     color: theme.colorScheme === "dark" ? theme.white : theme.black,
-
-    marginBottom: "2rem",
     [theme.fn.smallerThan("sm")]: {
       display: "none",
     },
@@ -34,7 +30,7 @@ function UserCard() {
           radius="md"
         />
         <Stack spacing={1}>
-          <Text fz={14} fw={500}>
+          <Text fz={16} fw={500}>
             Adewale Kujore
           </Text>
           <Text fz={11} fw={500}>
@@ -46,6 +42,7 @@ function UserCard() {
           color="#2F80ED"
           leftIcon={<IconUserPlus size={18} />}
           size="xs"
+          ml="auto"
         >
           Follow
         </Button>
@@ -57,8 +54,9 @@ function UserCard() {
         src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&w=1000&q=80"
         radius="md"
         alt="random"
-        maw={220}
         mah={200}
+        fit="fill"
+        placeholder="blur"
       />
     </Stack>
   );

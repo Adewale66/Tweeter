@@ -8,21 +8,21 @@ import User from "../models/users";
  */
 
 const createTweet = async (req, res) => {
-  const { tweet } = req.body;
-  if (!tweet) return res.status(400).json({ message: "Tweet is required" });
+  const { tweet, image, preference } = req.body;
+  if (!tweet || !preference)
+    return res.status(400).json({ message: "Tweet is required" });
 
   const newTweet = new Tweet({
     tweet,
-    likes: 0,
-    retweets: 0,
-    saved: 0,
+    preference,
+    image,
     madeBy: req.user.id,
   });
   const saved = await newTweet.save();
   const user = await User.findById(req.user.id);
-  user.tweets = [saved._id, ...user.tweets];
+  user.tweets = user.tweets.concat(saved._id);
   await user.save();
-  res.status(201).json(saved);
+  res.status(201).json({ message: "success" });
 };
 
 /**

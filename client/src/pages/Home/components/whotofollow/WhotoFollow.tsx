@@ -19,7 +19,7 @@ const WhotoFollow = () => {
   const { classes } = useStyles();
 
   return (
-    <Stack className={classes.container}>
+    <Stack className={classes.container} maw={320}>
       <Stack spacing={5}>
         <Text fz={12} fw={600}>
           Who to follow
@@ -29,7 +29,6 @@ const WhotoFollow = () => {
       <Stack>
         <UserCard />
         <Divider />
-
         <UserCard />
       </Stack>
     </Stack>
