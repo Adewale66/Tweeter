@@ -7,12 +7,15 @@ export const userApiSlice = apiSlice.injectEndpoints({
       { username: string; password: string; name: string }
     >({
       query: (body) => ({
-        url: "/user",
+        url: "user",
         method: "POST",
         body: body,
       }),
     }),
+    checkToken: builder.query<void, void>({
+      query: () => "checkToken",
+    }),
   }),
 });
 
-export const { useRegisterUserMutation } = userApiSlice;
+export const { useRegisterUserMutation, useCheckTokenQuery } = userApiSlice;

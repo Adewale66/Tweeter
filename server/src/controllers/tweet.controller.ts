@@ -47,7 +47,7 @@ const getTweet = async (req, res) => {
  */
 
 const getAllTweets = async (req, res) => {
-  const tweets = await Tweet.find();
+  const tweets = await Tweet.find().populate(["madeBy", "comments"]);
   return res.status(200).json(tweets);
 };
 

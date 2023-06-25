@@ -8,6 +8,7 @@ import { logRouter } from "./routes/log.route";
 import { errorHandler, unknownEndpoint } from "./utils/middleware";
 import morgan from "morgan";
 import tweetRouter from "./routes/tweet.route";
+import tokenRouter from "./routes/checkToken.route";
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(morgan("dev"));
 
 app.use("/api", logRouter);
+app.use("/api", tokenRouter);
 app.use("/api/user", userRouter);
 app.use("/api/tweet", tweetRouter);
 

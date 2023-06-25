@@ -14,6 +14,7 @@ import Home from "./pages/Home.tsx";
 import store from "./store";
 import { Provider } from "react-redux";
 import { Toaster } from "react-hot-toast";
+import AuthContext from "./context/AuthContext.tsx";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <Provider store={store}>
     <React.StrictMode>
       <Toaster />
+      <AuthContext />
       <RouterProvider router={router} />
       <BrowserRouter />
     </React.StrictMode>

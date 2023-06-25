@@ -107,8 +107,16 @@ export function HeaderMegaMenu() {
 
   async function logoutUser() {
     try {
-      await logout();
-      dispatch(removeCredentials());
+      await logout()
+        .unwrap()
+        .then(() => {
+          toast.success("Logged out");
+          dispatch(removeCredentials());
+        })
+        .catch((err) => {
+          if (err.status === 401)
+            toast.error("Token expired please login again");
+        });
     } catch (error) {
       toast.error("Something went wrong");
     }
@@ -117,6 +125,7 @@ export function HeaderMegaMenu() {
   return (
     <Box>
       <LoginModal opened={opened} close={close} />
+
       <Header height={60} px="md">
         <Group position="apart" sx={{ height: "100%" }}>
           <img src={colorScheme === "dark" ? lightLogo : logo} alt="logo" />

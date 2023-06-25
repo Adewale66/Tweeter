@@ -25,8 +25,16 @@ const User = ({ username }: { username: string }) => {
 
   async function logoutUser() {
     try {
-      await logout();
-      dispatch(removeCredentials());
+      await logout()
+        .unwrap()
+        .then(() => {
+          toast.success("Logged out");
+          dispatch(removeCredentials());
+        })
+        .catch((err) => {
+          if (err.status === 401)
+            toast.error("Token expired please login again");
+        });
     } catch (error) {
       toast.error("Something went wrong");
     }

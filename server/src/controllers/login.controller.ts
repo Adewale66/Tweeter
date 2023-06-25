@@ -27,7 +27,7 @@ const logUser = async (req, res) => {
   };
 
   const token = jwt.sign(tokenUser, process.env.TOKEN_SECRET, {
-    expiresIn: "1h",
+    expiresIn: "2h",
   });
 
   res
@@ -35,8 +35,8 @@ const logUser = async (req, res) => {
     .cookie("access_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 60,
+      sameSite: "strict",
+      maxAge: 60 * 60 * 2,
     })
     .json({
       id: user._id,

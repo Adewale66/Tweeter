@@ -12,8 +12,8 @@ import { IconHeart } from "@tabler/icons-react";
 
 const useStyles = createStyles((theme) => ({
   button: {
-    padding: "0 0.4rem",
     border: "none",
+    padding: "0",
     backgroundColor: "transparent",
     ...theme.fn.hover({
       cursor: "pointer",
