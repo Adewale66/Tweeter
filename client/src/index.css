@@ -11,9 +11,22 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* background-color: red; */
 }
 
+.root {
+  position: relative;
+}
 .home {
-  padding: 20px 0;
+  padding: 20px 10px;
+  position: relative;
+}
+
+.grayBg {
+  background-color: #e0e0e0;
+}
+
+.side-content {
+  position: absolute;
+  top: 20px;
+  right: 70px;
 }

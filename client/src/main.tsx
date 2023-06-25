@@ -10,7 +10,7 @@ import {
 import Bookmarks from "./pages/Bookmarks.tsx";
 import Explore from "./pages/Explore.tsx";
 import MobileLogin from "./pages/MobileLogin.tsx";
-import Home from "./pages/Home.tsx";
+import Home from "./pages/Home/Home.tsx";
 import store from "./store";
 import { Provider } from "react-redux";
 import { Toaster } from "react-hot-toast";

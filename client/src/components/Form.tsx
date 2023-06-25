@@ -47,7 +47,13 @@ export function AuthenticationForm({ close }: { close: () => void }) {
     if (type === "login") {
       try {
         const res = await login({ username, password }).unwrap();
+
         dispatch(setCredentials(res));
+        toast.success("Welcome back");
+
+        form.reset();
+        if (pathname === "/login") navigate("/");
+        else close();
       } catch (error) {
         toast.error("Invalid username or password");
       }
@@ -56,14 +62,15 @@ export function AuthenticationForm({ close }: { close: () => void }) {
         await register({ name, username, password });
         const res = await login({ username, password }).unwrap();
         dispatch(setCredentials(res));
+        toast.success("Registration successful");
+        form.reset();
+        if (pathname === "/login") navigate("/");
+        else close();
       } catch (error) {
         console.log(error);
+        toast.error("Username already exists");
       }
     }
-
-    form.reset();
-    if (pathname === "/login") navigate("/");
-    else close();
   }
   if (isLoading) visible = true;
   if (isLoading2) visible = true;

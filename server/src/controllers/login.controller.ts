@@ -36,7 +36,7 @@ const logUser = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 60 * 60 * 2,
+      maxAge: 60 * 60 * 60 * 60,
     })
     .json({
       id: user._id,

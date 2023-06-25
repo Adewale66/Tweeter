@@ -1,5 +1,5 @@
 import { Avatar, createStyles, Box, Input, Flex } from "@mantine/core";
-import { IconPhoto } from "@tabler/icons-react";
+import { IconMessage } from "@tabler/icons-react";
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -39,7 +39,7 @@ const Reply = () => {
           radius="md"
           variant="unstyled"
           rightSection={
-            <IconPhoto
+            <IconMessage
               className={classes.image}
               color={theme.colorScheme === "dark" ? "white" : "black"}
             />

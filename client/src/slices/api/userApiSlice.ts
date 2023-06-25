@@ -12,7 +12,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: body,
       }),
     }),
-    checkToken: builder.query<void, void>({
+    checkToken: builder.query<{ message: string }, void>({
       query: () => "checkToken",
     }),
   }),
