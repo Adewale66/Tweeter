@@ -33,12 +33,9 @@ const getUser = async (req, res) => {
   const id = req.params.id;
   const user = await User.findById(id).populate([
     "tweets",
-    "likes",
     "followers",
     "following",
-    "retweets",
-    "comments",
-    "saved",
+    "interactedTweets.tweet",
   ]);
   if (user === null) return res.status(404).json({ message: "User not found" });
   res.status(200).json(user);

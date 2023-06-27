@@ -69,6 +69,9 @@ const Tweet = () => {
       <Divider color={theme.colorScheme === "dark" ? "gray.7" : "gray.3"} />
       <Reply />
       <Comments />
+      <Comments />
+      <Comments />
+      <Comments />
     </Container>
   );
 };

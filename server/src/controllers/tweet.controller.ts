@@ -52,103 +52,67 @@ const getAllTweets = async (req, res) => {
 };
 
 /**
- * @desc liking to a tweet
- * @route PATCH /tweets/postId/like
+ * @desc interacting  to a tweet
+ * @route PATCH /tweets/postId/interact
  * @access Private
  */
 
-const likeTweet = async (req, res) => {
+const interactTweet = async (req, res) => {
   const id = req.params.postId;
   const tweet = await Tweet.findById(id);
   const user = await User.findById(req.user.id);
+  const { type } = req.body;
+
+  if (!type) return res.status(400).json({ message: "Type is required" });
+  const tweetType =
+    type === "liked" ? "likes" : type === "retweeted" ? "retweets" : "saved";
 
   if (tweet === null)
     return res.status(404).json({ message: "Tweet not found" });
 
-  if (user.likes.map((id) => id.toString()).includes(tweet._id.toString())) {
-    tweet.likes--;
-    await tweet.save();
-    user.likes = user.likes.filter(
-      (like) => like.toString() !== tweet._id.toString()
-    );
+  const idx = user.interactedTweets.findIndex(
+    (t) => t.tweet._id.toString() == tweet._id.toString()
+  );
 
-    await user.save();
-  } else {
-    tweet.likes++;
-    await tweet.save();
+  if (idx !== -1) {
+    if (user.interactedTweets[idx][type]) {
+      tweet[tweetType]--;
+      await tweet.save();
+      user.interactedTweets[idx][type] = false;
+      if (
+        !user.interactedTweets[idx]["liked"] &&
+        !user.interactedTweets[idx]["retweeted"] &&
+        !user.interactedTweets[idx]["saved"]
+      )
+        user.interactedTweets = user.interactedTweets.filter(
+          (t) => t.tweet._id.toString() !== tweet._id.toString()
+        );
+      await user.save();
+      return res.status(200).json({ message: "success" });
+    }
 
-    user.likes = [...user.likes, tweet._id];
+    tweet[tweetType]++;
+    await tweet.save();
+    user.interactedTweets[idx][type] = true;
+    if (type === "retweeted")
+      user.interactedTweets[idx]["timeMade"] = new Date();
     await user.save();
+    return res.status(200).json({ message: "succes" });
   }
 
-  return res.status(200).json({ message: "Tweet Liked" });
+  tweet[tweetType]++;
+  await tweet.save();
+
+  user.interactedTweets = user.interactedTweets.concat({
+    tweet: tweet._id,
+    liked: type === "liked",
+    retweeted: type === "retweeted",
+    saved: type === "saved",
+    timeMade: type === "retweeted" && new Date(),
+  });
+  await user.save();
+
+  return res.status(200).json({ message: "success" });
 };
 
-/**
- * @desc Retweeting  a tweet
- * @route PATCH /tweets/postId/retweet
- * @access Private
- */
-
-const retweetTweet = async (req, res) => {
-  const id = req.params.postId;
-  const tweet = await Tweet.findById(id);
-  const user = await User.findById(req.user.id);
-
-  if (user.retweets.map((id) => id.toString()).includes(tweet._id.toString())) {
-    tweet.retweets--;
-    await tweet.save();
-    user.retweets = user.retweets.filter(
-      (like) => like.toString() !== tweet._id.toString()
-    );
-
-    await user.save();
-  } else {
-    tweet.retweets++;
-    await tweet.save();
-
-    user.retweets = [...user.retweets, tweet._id];
-    await user.save();
-  }
-
-  return res.status(200).json({ message: "Tweet Liked" });
-};
-
-/**
- * @desc saving a tweet
- * @route PATCH /tweets/postId/save
- * @access Private
- */
-
-const saveTweet = async (req, res) => {
-  const id = req.params.postId;
-  const tweet = await Tweet.findById(id);
-  const user = await User.findById(req.user.id);
-
-  if (user.saved.map((id) => id.toString()).includes(tweet._id.toString())) {
-    tweet.saved--;
-    await tweet.save();
-    user.saved = user.saved.filter(
-      (like) => like.toString() !== tweet._id.toString()
-    );
-
-    await user.save();
-  } else {
-    tweet.saved++;
-    await tweet.save();
-
-    user.saved = [...user.saved, tweet._id];
-    await user.save();
-  }
-
-  return res.status(200).json({ message: "Tweet Liked" });
-};
-
-export {
-  createTweet,
-  getTweet,
-  getAllTweets,
-  likeTweet,
-  retweetTweet,
-  saveTweet,
-};
+export { createTweet, getTweet, getAllTweets, interactTweet };

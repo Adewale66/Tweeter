@@ -5,6 +5,6 @@ import asyncHandler from "express-async-handler";
 
 const tokenRouter = express.Router();
 
-tokenRouter.get("/checkToken", getAccessToken, asyncHandler(checkToken));
+tokenRouter.post("/checkToken", getAccessToken, asyncHandler(checkToken));
 
 export default tokenRouter;

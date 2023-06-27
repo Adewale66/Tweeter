@@ -12,10 +12,13 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: body,
       }),
     }),
-    checkToken: builder.query<{ message: string }, void>({
-      query: () => "checkToken",
+    checkToken: builder.mutation<{ message: string }, void>({
+      query: () => ({
+        url: "checkToken",
+        method: "POST",
+      }),
     }),
   }),
 });
 
-export const { useRegisterUserMutation, useCheckTokenQuery } = userApiSlice;
+export const { useRegisterUserMutation, useCheckTokenMutation } = userApiSlice;

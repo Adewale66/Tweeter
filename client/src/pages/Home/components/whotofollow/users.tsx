@@ -46,6 +46,9 @@ function UserCard() {
         >
           Follow
         </Button>
+        {/* <Button h={32} variant="default" size="xs" ml="auto">
+          Following
+        </Button> */}
       </Flex>
       <Text fz={11} fw={500}>
         Lorem ipsum dolor sit amet consectetur adipisicing.

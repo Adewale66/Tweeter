@@ -9,14 +9,14 @@ import {
   Textarea,
   createStyles,
   Popover,
-  LoadingOverlay,
 } from "@mantine/core";
 import { IconPhoto, IconWorld, IconUsers } from "@tabler/icons-react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../store";
 import { useState } from "react";
 import { useMakeTweetMutation } from "../../../slices/api/tweetApiSlice";
 import { toast } from "react-hot-toast";
+import { removeCredentials } from "../../../slices/authSlice";
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -85,6 +85,7 @@ const MakeTweet = () => {
   >("Everyone");
   const [tweet, setTweet] = useState<string>("");
   const [makeTweet] = useMakeTweetMutation();
+  const dispatch: AppDispatch = useDispatch();
 
   async function handleSubmit() {
     try {
@@ -94,9 +95,13 @@ const MakeTweet = () => {
         image: "TODO",
       }).unwrap();
       toast.success("Tweeted Successfully");
-    } catch (error) {
-      console.log("here");
-      toast.error("Something went wrong");
+      setTweet("");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.status === 401) {
+        dispatch(removeCredentials());
+        toast.error("Session expired, please login again");
+      } else toast.error("Something went wrong");
     }
   }
 

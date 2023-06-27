@@ -11,7 +11,6 @@ import Tweet from "../models/tweet";
 const makeComment = async (req, res) => {
   const id = req.params.id;
   const tweet = await Tweet.findById(id);
-  const user = await User.findById(req.user.id);
   const { comment } = req.body;
 
   if (!comment) return res.status(400).json({ message: "Comment is required" });
@@ -27,8 +26,6 @@ const makeComment = async (req, res) => {
   tweet.comments = [...tweet.comments, NewComment._id];
   await tweet.save();
 
-  user.comments = [...user.comments, NewComment._id];
-  await user.save();
   res.status(200).json({ message: "Comment made" });
 };
 

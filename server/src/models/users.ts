@@ -39,28 +39,16 @@ const User = new Schema({
       ref: "Tweet",
     },
   ],
-  likes: [
+  interactedTweets: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "Tweet",
-    },
-  ],
-  retweets: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Tweet",
-    },
-  ],
-  comments: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Comment",
-    },
-  ],
-  saved: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Tweet",
+      tweet: {
+        type: Schema.Types.ObjectId,
+        ref: "Tweet",
+      },
+      liked: Boolean,
+      saved: Boolean,
+      retweeted: Boolean,
+      timeMade: Date,
     },
   ],
 });
