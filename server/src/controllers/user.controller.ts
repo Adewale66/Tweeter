@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "../models/users";
+import { sortTweets } from "@/utils/homeTweets";
 
 /**
  * @desc Create a user
@@ -30,13 +31,26 @@ const CreateUser = async (req, res) => {
  */
 
 const getUser = async (req, res) => {
-  const id = req.params.id;
-  const user = await User.findById(id).populate([
-    "tweets",
-    "followers",
-    "following",
-    "interactedTweets.tweet",
-  ]);
+  const username = req.params.id;
+  const user = await User.find({ username })
+    .populate(["followers", "following"])
+    .populate({
+      path: "tweets.tweet",
+      populate: {
+        path: "madeBy",
+        model: "User",
+      },
+    })
+    .populate({
+      path: "tweets.tweet",
+      populate: {
+        path: "comments",
+        populate: {
+          path: "madeBy",
+          model: "User",
+        },
+      },
+    });
   if (user === null) return res.status(404).json({ message: "User not found" });
   res.status(200).json(user);
 };
@@ -97,7 +111,7 @@ const followUser = async (req, res) => {
     await followingUser.save();
   }
 
-  res.status(200).json({ message: "User followed" });
+  res.status(200).json({ message: "Success" });
 };
 
 /**
@@ -136,6 +150,12 @@ const updateUser = async (req, res) => {
   await user.save();
   res.status(200).json({ message: "User updated" });
 };
+
+/**
+ * @desc Get  Profile
+ * @route GET /profile/id
+ * @access Public
+ */
 
 export {
   CreateUser,

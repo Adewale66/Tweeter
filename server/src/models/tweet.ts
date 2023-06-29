@@ -12,7 +12,7 @@ const tweetSchema = new Schema(
       type: Number,
       default: 0,
     },
-    saved: {
+    saves: {
       type: Number,
       default: 0,
     },

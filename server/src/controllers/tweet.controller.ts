@@ -20,7 +20,13 @@ const createTweet = async (req, res) => {
   });
   const saved = await newTweet.save();
   const user = await User.findById(req.user.id);
-  user.tweets = user.tweets.concat(saved._id);
+  user.tweets = user.tweets.concat({
+    tweet: saved._id,
+    liked: false,
+    retweeted: false,
+    saved: false,
+    timeMade: saved.createdAt,
+  });
   await user.save();
   res.status(201).json({ message: "success" });
 };
@@ -64,27 +70,32 @@ const interactTweet = async (req, res) => {
   const { type } = req.body;
 
   if (!type) return res.status(400).json({ message: "Type is required" });
+
+  if (type !== "liked" && type !== "retweeted" && type !== "saved")
+    return res.status(400).json({ message: "Type is invalid" });
+
   const tweetType =
-    type === "liked" ? "likes" : type === "retweeted" ? "retweets" : "saved";
+    type === "liked" ? "likes" : type === "retweeted" ? "retweets" : "saves";
 
   if (tweet === null)
     return res.status(404).json({ message: "Tweet not found" });
 
-  const idx = user.interactedTweets.findIndex(
+  const idx = user.tweets.findIndex(
     (t) => t.tweet._id.toString() == tweet._id.toString()
   );
 
   if (idx !== -1) {
-    if (user.interactedTweets[idx][type]) {
+    if (user.tweets[idx][type]) {
       tweet[tweetType]--;
       await tweet.save();
-      user.interactedTweets[idx][type] = false;
+      user.tweets[idx][type] = false;
       if (
-        !user.interactedTweets[idx]["liked"] &&
-        !user.interactedTweets[idx]["retweeted"] &&
-        !user.interactedTweets[idx]["saved"]
+        !user.tweets[idx]["liked"] &&
+        !user.tweets[idx]["retweeted"] &&
+        !user.tweets[idx]["saved"] &&
+        tweet.madeBy.toString() !== user._id.toString()
       )
-        user.interactedTweets = user.interactedTweets.filter(
+        user.tweets = user.tweets.filter(
           (t) => t.tweet._id.toString() !== tweet._id.toString()
         );
       await user.save();
@@ -93,17 +104,16 @@ const interactTweet = async (req, res) => {
 
     tweet[tweetType]++;
     await tweet.save();
-    user.interactedTweets[idx][type] = true;
-    if (type === "retweeted")
-      user.interactedTweets[idx]["timeMade"] = new Date();
+    user.tweets[idx][type] = true;
+    if (type === "retweeted") user.tweets[idx]["timeMade"] = new Date();
     await user.save();
-    return res.status(200).json({ message: "succes" });
+    return res.status(200).json({ message: "success" });
   }
 
   tweet[tweetType]++;
   await tweet.save();
 
-  user.interactedTweets = user.interactedTweets.concat({
+  user.tweets = user.tweets.concat({
     tweet: tweet._id,
     liked: type === "liked",
     retweeted: type === "retweeted",

@@ -9,7 +9,7 @@ import { errorHandler, unknownEndpoint } from "./utils/middleware";
 import morgan from "morgan";
 import tweetRouter from "./routes/tweet.route";
 import tokenRouter from "./routes/checkToken.route";
-import homeRouter from "./routes/home.route";
+import navRouter from "./routes/nav.route";
 
 const app = express();
 
@@ -30,7 +30,7 @@ app.use("/api", logRouter);
 app.use("/api", tokenRouter);
 app.use("/api/user", userRouter);
 app.use("/api/tweet", tweetRouter);
-app.use("/api", homeRouter);
+app.use("/api", navRouter);
 
 app.use(unknownEndpoint);
 app.use(errorHandler);

@@ -25,21 +25,20 @@ const User = new Schema({
     },
   ],
 
-  description: String,
-  Profileimage: {
+  description: {
     type: String,
+    default: "",
+  },
+  profileimage: {
+    type: String,
+    default: "",
   },
   bannerImage: {
     type: String,
+    default: "",
   },
   images: [{ url: String, timeMade: Date }],
   tweets: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Tweet",
-    },
-  ],
-  interactedTweets: [
     {
       tweet: {
         type: Schema.Types.ObjectId,
