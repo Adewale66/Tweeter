@@ -24,7 +24,7 @@ export function sortTweets(users: UserProps[], req: { user: { username } }) {
         },
         timeMade: users[i].tweets[j].retweeted
           ? users[i].tweets[j].timeMade
-          : "",
+          : users[i].tweets[j].tweet.createdAt,
         retweetedBy: users[i].tweets[j].retweeted ? users[i].username : "",
         retweeted: users[i].tweets[j].retweeted,
         saved: users[i].tweets[j].saved,
@@ -74,5 +74,8 @@ export function sortTweets(users: UserProps[], req: { user: { username } }) {
       }
     } else temp.push(tweets[i]);
   }
+  temp.sort((a, b) => {
+    return new Date(b.timeMade).getTime() - new Date(a.timeMade).getTime();
+  });
   return temp;
 }

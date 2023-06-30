@@ -6,7 +6,6 @@ import {
   Stack,
   Flex,
   createStyles,
-  Image,
 } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
@@ -35,7 +34,7 @@ const Comments = () => {
     <Box mt={6}>
       <Flex gap={10}>
         <Avatar
-          src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&w=1000&q=80"
+          src="http://localhost:8000/uploads/tree-736885_1280.jpg"
           alt="wale"
           radius="md"
         />
@@ -51,12 +50,6 @@ const Comments = () => {
           <Text>
             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam,
           </Text>
-          <Image
-            radius="md"
-            alt="image"
-            mx="auto"
-            src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&w=1000&q=80"
-          />
         </Stack>
       </Flex>
     </Box>

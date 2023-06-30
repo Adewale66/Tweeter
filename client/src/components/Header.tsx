@@ -16,7 +16,6 @@ import { useDisclosure } from "@mantine/hooks";
 import logo from "../assets/tweeter.svg";
 import lightLogo from "../assets/tweeter-light.svg";
 import { Link } from "react-router-dom";
-import LoginModal from "./Login";
 import User from "./user";
 import { ThemeToggle } from "./ChangeTheme";
 import { useDispatch, useSelector } from "react-redux";
@@ -95,7 +94,6 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export function HeaderMegaMenu() {
-  const [opened, { open, close }] = useDisclosure(false);
   const user = useSelector((state: RootState) => state.auth.userInfo);
 
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
@@ -124,8 +122,6 @@ export function HeaderMegaMenu() {
 
   return (
     <Box>
-      <LoginModal opened={opened} close={close} />
-
       <Header height={60} px="md">
         <Group position="apart" sx={{ height: "100%" }}>
           <img src={colorScheme === "dark" ? lightLogo : logo} alt="logo" />
@@ -146,13 +142,7 @@ export function HeaderMegaMenu() {
           </Group>
 
           <Group className={classes.hiddenMobile}>
-            {user ? (
-              <User username={user.username} />
-            ) : (
-              <Button onClick={open} size="md">
-                Log in
-              </Button>
-            )}
+            {user && <User username={user.username} />}
           </Group>
 
           <Burger

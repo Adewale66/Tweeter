@@ -120,19 +120,6 @@ const followUser = async (req, res) => {
  * @access Private
  */
 
-const uploadImage = async (req, res) => {
-  const { image } = req.body;
-
-  const user = await User.findById(req.user.id);
-
-  if (user === null) return res.status(404).json({ message: "User not found" });
-
-  user.images = [...user.images, { url: image, timeMade: new Date() }];
-  await user.save();
-
-  res.status(200).json({ message: "Image uploaded" });
-};
-
 /**
  * @desc update user
  * @route PUT /
@@ -157,12 +144,4 @@ const updateUser = async (req, res) => {
  * @access Public
  */
 
-export {
-  CreateUser,
-  getUser,
-  getAllUsers,
-  deleteUser,
-  followUser,
-  uploadImage,
-  updateUser,
-};
+export { CreateUser, getUser, getAllUsers, deleteUser, followUser, updateUser };

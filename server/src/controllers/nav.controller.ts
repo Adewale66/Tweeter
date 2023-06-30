@@ -18,6 +18,7 @@ const getHomeTweets = async (req, res) => {
       populate: {
         path: "madeBy",
         model: "User",
+        select: "username profileimage",
       },
     })
     .populate({
@@ -27,6 +28,7 @@ const getHomeTweets = async (req, res) => {
         populate: {
           path: "madeBy",
           model: "User",
+          select: "username profileimage",
         },
       },
     });
@@ -42,13 +44,21 @@ const getHomeTweets = async (req, res) => {
  */
 
 const getExploreTweets = async (req, res) => {
-  const users: UserProps[] = await Tweet.find({})
-    .populate(["madeBy"])
+  const user = await User.findById(req.user.id);
+  const users: UserProps[] = await Tweet.find({
+    madeBy: { $nin: [...user.following, user._id] },
+  })
+    .populate({
+      path: "madeBy",
+      model: "User",
+      select: "username profileimage",
+    })
     .populate({
       path: "comments",
       populate: {
         path: "madeBy",
         model: "User",
+        select: "username profileimage",
       },
     });
 
@@ -68,6 +78,7 @@ const getSavedTweets = async (req, res) => {
       populate: {
         path: "madeBy",
         model: "User",
+        select: "username profileimage",
       },
     })
     .populate({
@@ -77,6 +88,7 @@ const getSavedTweets = async (req, res) => {
         populate: {
           path: "madeBy",
           model: "User",
+          select: "username profileimage",
         },
       },
     });

@@ -10,18 +10,38 @@ import {
   Anchor,
   Stack,
   LoadingOverlay,
+  createStyles,
 } from "@mantine/core";
 import { useLoginMutation } from "../slices/api/logApiSlice";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../slices/authSlice";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useRegisterUserMutation } from "../slices/api/userApiSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
+import { useEffect } from "react";
 
-export function AuthenticationForm({ close }: { close: () => void }) {
+const useStyles = createStyles((theme) => ({
+  container: {
+    backgroundColor:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[6]
+        : theme.colors.gray[0],
+    minHeight: "100vh",
+    color: theme.colorScheme === "dark" ? theme.white : theme.black,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+}));
+
+export function AuthenticationForm() {
   const [type, toggle] = useToggle(["login", "register"]);
   let visible = false;
   const navigate = useNavigate();
+  const user = useSelector((state: RootState) => state.auth.userInfo);
 
   const form = useForm({
     initialValues: {
@@ -40,7 +60,11 @@ export function AuthenticationForm({ close }: { close: () => void }) {
   const [login, { isLoading }] = useLoginMutation();
   const [register, { isLoading: isLoading2 }] = useRegisterUserMutation();
   const dispatch = useDispatch();
-  const { pathname } = useLocation();
+  const { classes } = useStyles();
+
+  useEffect(() => {
+    if (user) navigate("/");
+  }, [user, navigate]);
 
   async function handleSubmit() {
     const { name, username, password } = form.values;
@@ -50,12 +74,12 @@ export function AuthenticationForm({ close }: { close: () => void }) {
 
         dispatch(setCredentials(res));
         toast.success("Welcome back");
-
         form.reset();
-        if (pathname === "/login") navigate("/");
-        else close();
-      } catch (error) {
-        toast.error("Invalid username or password");
+        navigate("/");
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        if (error.status === "PARSING_ERROR") toast.error(error.data);
+        else toast.error("Invalid username or password");
       }
     } else {
       try {
@@ -64,19 +88,19 @@ export function AuthenticationForm({ close }: { close: () => void }) {
         dispatch(setCredentials(res));
         toast.success("Registration successful");
         form.reset();
-        if (pathname === "/login") navigate("/");
-        else close();
+        navigate("/");
       } catch (error) {
         console.log(error);
         toast.error("Username already exists");
       }
     }
   }
+
   if (isLoading) visible = true;
   if (isLoading2) visible = true;
 
   return (
-    <Paper radius="md" p="md">
+    <Paper className={classes.container}>
       <LoadingOverlay visible={visible} overlayBlur={2} />
       <Text size="lg" weight={500}>
         Welcome to Tweeter!
@@ -84,7 +108,7 @@ export function AuthenticationForm({ close }: { close: () => void }) {
       <br />
 
       <form onSubmit={form.onSubmit(handleSubmit)}>
-        <Stack>
+        <Stack miw={300} mih={300} spacing={40} justify="center">
           {type === "register" && (
             <TextInput
               label="Name"
@@ -101,6 +125,7 @@ export function AuthenticationForm({ close }: { close: () => void }) {
           <TextInput
             required
             label="Username"
+            color="red"
             placeholder="Username"
             value={form.values.username}
             onChange={(event) =>

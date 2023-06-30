@@ -5,11 +5,12 @@ import compression from "compression";
 import cookieParser from "cookie-parser";
 import userRouter from "./routes/user.route";
 import { logRouter } from "./routes/log.route";
-import { errorHandler, unknownEndpoint } from "./utils/middleware";
+import { errorHandler, unknownEndpoint } from "./middleware/middleware";
 import morgan from "morgan";
 import tweetRouter from "./routes/tweet.route";
 import tokenRouter from "./routes/checkToken.route";
 import navRouter from "./routes/nav.route";
+import { NodeEnv } from "./utils/config";
 
 const app = express();
 
@@ -18,13 +19,21 @@ app.use(
     credentials: true,
   })
 );
-app.use(helmet());
+
+app.use(
+  helmet({
+    crossOriginResourcePolicy: {
+      policy: "cross-origin",
+    },
+  })
+);
 
 app.use(compression());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(morgan("dev"));
+if (NodeEnv !== "test") app.use(morgan("dev"));
+app.use(express.static("public"));
 
 app.use("/api", logRouter);
 app.use("/api", tokenRouter);

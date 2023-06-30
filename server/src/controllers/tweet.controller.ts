@@ -8,14 +8,20 @@ import User from "../models/users";
  */
 
 const createTweet = async (req, res) => {
-  const { tweet, image, preference } = req.body;
+  const { tweet, preference } = req.body;
+  let imageUrl = "";
+  if (req.file) {
+    const file = req.file;
+    imageUrl = `${req.protocol}://${req.get("host")}/uploads/${file.filename}`;
+  }
+
   if (!tweet || !preference)
     return res.status(400).json({ message: "Tweet is required" });
 
   const newTweet = new Tweet({
     tweet,
     preference,
-    image,
+    image: imageUrl,
     madeBy: req.user.id,
   });
   const saved = await newTweet.save();

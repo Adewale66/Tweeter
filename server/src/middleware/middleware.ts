@@ -1,4 +1,4 @@
-import { errorInfo, info } from "./logger";
+import { errorInfo, info } from "../utils/logger";
 import jwt from "jsonwebtoken";
 
 const unknownEndpoint = (req, res, next) => {

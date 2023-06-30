@@ -9,11 +9,13 @@ import {
   Textarea,
   createStyles,
   Popover,
+  CloseButton,
+  Image,
 } from "@mantine/core";
 import { IconPhoto, IconWorld, IconUsers } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useMakeTweetMutation } from "../../../slices/api/tweetApiSlice";
 import { toast } from "react-hot-toast";
 import { removeCredentials } from "../../../slices/authSlice";
@@ -85,17 +87,24 @@ const MakeTweet = () => {
   >("Everyone");
   const [tweet, setTweet] = useState<string>("");
   const [makeTweet] = useMakeTweetMutation();
+  const [selectedFile, setSelectedFile] = useState<Blob | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const dispatch: AppDispatch = useDispatch();
 
   async function handleSubmit() {
+    const formData = new FormData();
+    formData.append("tweet", tweet);
+    formData.append("preference", whoCanReply);
+
+    if (selectedFile) {
+      formData.append("file", selectedFile);
+    }
     try {
-      await makeTweet({
-        tweet,
-        preference: whoCanReply,
-        image: "TODO",
-      }).unwrap();
+      await makeTweet(formData).unwrap();
       toast.success("Tweeted Successfully");
       setTweet("");
+      setSelectedFile(null);
+      setPreviewImage(null);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error.status === 401) {
@@ -104,6 +113,26 @@ const MakeTweet = () => {
       } else toast.error("Something went wrong");
     }
   }
+
+  const fileUpload = () => {
+    document.getElementById("fileInput")?.click();
+  };
+
+  const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    setSelectedFile(file as Blob);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPreviewImage(reader.result as string);
+    };
+    reader.readAsDataURL(file as Blob);
+  };
+
+  const removeImage = () => {
+    setPreviewImage(null);
+    setSelectedFile(null);
+  };
 
   return (
     <Container
@@ -123,9 +152,10 @@ const MakeTweet = () => {
         <Divider color={theme.colorScheme === "dark" ? "gray.7" : "gray.3"} />
         <Flex gap={8}>
           <Avatar
-            src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&w=1000&q=80"
+            src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&w=Z1000&q=80"
             alt="wale"
             radius="md"
+            className={classes.hiddenMobile}
           />
           <Stack className={classes.textArea} spacing="xs">
             <Textarea
@@ -136,8 +166,41 @@ const MakeTweet = () => {
               value={tweet}
               onChange={(e) => setTweet(e.target.value)}
             />
+            {previewImage && (
+              <div
+                style={{
+                  overflow: "hidden",
+                  maxHeight: "17.5rem",
+                  position: "relative",
+                }}
+              >
+                <Image src={previewImage} alt="Preview" />
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "0.5rem",
+                    right: "0.5rem",
+                  }}
+                >
+                  <CloseButton size="md" onClick={removeImage} />
+                </div>
+              </div>
+            )}
             <Flex gap={9} align="center" className={classes.hiddenMobile}>
-              <IconPhoto size={20} color="#2F80ED" className={classes.imgae} />
+              <input
+                type="file"
+                name="imageFile"
+                id="fileInput"
+                style={{ display: "none" }}
+                onChange={handleFileUpload}
+              />
+              <IconPhoto
+                size={20}
+                color="#2F80ED"
+                className={classes.imgae}
+                onClick={fileUpload}
+              />
+
               <IconWorld size={20} color="#2F80ED" />
               <Popover position="bottom-start" width={234} radius={12}>
                 <Popover.Target>
@@ -183,7 +246,19 @@ const MakeTweet = () => {
           </Stack>
         </Flex>
         <Flex gap={9} align="center" className={classes.hiddenDesktop}>
-          <IconPhoto size={20} color="#2F80ED" />
+          <input
+            type="file"
+            id="fileInput"
+            style={{ display: "none" }}
+            name="imageFile"
+            onChange={handleFileUpload}
+          />
+          <IconPhoto
+            size={20}
+            color="#2F80ED"
+            className={classes.imgae}
+            onClick={fileUpload}
+          />
           <IconWorld size={20} color="#2F80ED" />
           <Popover position="bottom-start" width={234} radius={12}>
             <Popover.Target>
