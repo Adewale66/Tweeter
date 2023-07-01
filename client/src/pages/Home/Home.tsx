@@ -5,7 +5,7 @@ import WhotoFollow from "./components/whotofollow/WhotoFollow";
 
 const Home = () => {
   return (
-    <div className="home">
+    <div style={{ position: "relative", padding: "1.25rem 0.625rem" }}>
       <MakeTweet />
       <Tweet />
       <Tweet />
@@ -13,7 +13,7 @@ const Home = () => {
       <Tweet />
       <Tweet />
       <Tweet />
-      <div className="side-content">
+      <div style={{ position: "absolute", top: "1.25rem", right: "4.375rem" }}>
         <Trends />
         <WhotoFollow />
       </div>

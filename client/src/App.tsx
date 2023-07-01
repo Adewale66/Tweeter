@@ -15,7 +15,14 @@ function App() {
   }, [user, navigate]);
   return (
     <UiProvider>
-      <div className="layout">
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
         <HeaderMegaMenu />
         <Outlet />
         <FooterSocial />

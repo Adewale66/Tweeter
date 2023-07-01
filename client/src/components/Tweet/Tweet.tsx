@@ -12,6 +12,7 @@ import {
 import Interact from "./Interact";
 import Reply from "./Reply";
 import Comments from "./Comments";
+import { Link } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -39,7 +40,9 @@ const Tweet = () => {
           radius="md"
         />
         <div>
-          <Text fz="sm">Adewale Kujore</Text>
+          <Text fz="sm" component={Link} to="/admin">
+            Adewale Kujore
+          </Text>
           <Text fz="xs" c="dimmed">
             August 24th at 20:43
           </Text>

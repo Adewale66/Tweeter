@@ -18,6 +18,7 @@ import { removeCredentials } from "../slices/authSlice";
 import { useDispatch } from "react-redux";
 import { toast } from "react-hot-toast/headless";
 import { AppDispatch } from "../store";
+import { Link } from "react-router-dom";
 
 const User = ({ username }: { username: string }) => {
   const dispatch: AppDispatch = useDispatch();
@@ -54,7 +55,13 @@ const User = ({ username }: { username: string }) => {
         <Flex direction="column" gap="md">
           <Group position="left">
             <IconUser />
-            <Text style={{ cursor: "pointer" }}>My Profile</Text>
+            <Text
+              style={{ cursor: "pointer" }}
+              component={Link}
+              to={`/${username}`}
+            >
+              My Profile
+            </Text>
           </Group>
 
           <Group position="left">

@@ -18,6 +18,7 @@ import Demo from "./context/Scroll.tsx";
 import UiProvider from "./context/uiProvider.tsx";
 import { AuthenticationForm } from "./components/Form.tsx";
 import { NotFoundTitle } from "./pages/Error.tsx";
+import Profile from "./pages/Profile/Profile.tsx";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "/explore",
         element: <Explore />,
+      },
+      {
+        path: "/:profile",
+        element: <Profile />,
       },
     ],
   },
