@@ -18,7 +18,18 @@ export const userApiSlice = apiSlice.injectEndpoints({
         method: "POST",
       }),
     }),
+    updateUser: builder.mutation<void, FormData>({
+      query: (body) => ({
+        url: "user",
+        method: "PUT",
+        body: body,
+      }),
+    }),
   }),
 });
 
-export const { useRegisterUserMutation, useCheckTokenMutation } = userApiSlice;
+export const {
+  useRegisterUserMutation,
+  useCheckTokenMutation,
+  useUpdateUserMutation,
+} = userApiSlice;

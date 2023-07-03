@@ -1,6 +1,5 @@
 import bcrypt from "bcrypt";
 import User from "../models/users";
-import { sortTweets } from "@/utils/homeTweets";
 
 /**
  * @desc Create a user
@@ -67,7 +66,7 @@ const getAllUsers = async (req, res) => {
 };
 
 /**
- * @desc delete a particular user
+ * @desc delete  user
  * @route DELETE /
  * @access Private
  */
@@ -115,33 +114,40 @@ const followUser = async (req, res) => {
 };
 
 /**
- * @desc upload images
- * @route POST /upload
- * @access Private
- */
-
-/**
  * @desc update user
  * @route PUT /
  * @access Private
  */
 
 const updateUser = async (req, res) => {
-  const { profileimage, bannerImage, description } = req.body;
+  const { username, description } = req.body;
+  if (!username)
+    return res.status(400).json({ message: "Username can not be empty" });
+  console.log(req.files);
+
+  console.log(req.files["profile"]);
+  console.log(req.files["banner"]);
+
+  let profileimage = "";
+  let bannerImage = "";
+  if (Object.keys(req.files).length > 0) {
+    profileimage = `${req.protocol}://${req.get("host")}/uploads/${
+      req.files["profile"][0].filename
+    }`;
+    bannerImage = `${req.protocol}://${req.get("host")}/uploads/${
+      req.files["banner"][0].filename
+    }`;
+  }
+
   const user = await User.findByIdAndUpdate(req.user.id, {
+    username,
     profileimage,
-    description,
     bannerImage,
+    description,
   });
 
   await user.save();
   res.status(200).json({ message: "User updated" });
 };
-
-/**
- * @desc Get  Profile
- * @route GET /profile/id
- * @access Public
- */
 
 export { CreateUser, getUser, getAllUsers, deleteUser, followUser, updateUser };

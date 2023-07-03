@@ -12,6 +12,8 @@ import { useDisclosure } from "@mantine/hooks";
 import Modal from "./components/Modal";
 import { useState } from "react";
 import Body from "./components/Body";
+import { Link } from "react-router-dom";
+import Settings from "./components/Settings";
 
 const useStyles = createStyles((theme) => ({
   image: {
@@ -89,14 +91,14 @@ const useStyles = createStyles((theme) => ({
   modal: {
     ...theme.fn.hover({
       cursor: "pointer",
-      backgroundColor:
-        theme.colorScheme === "dark" ? theme.colors.dark[7] : "white",
     }),
   },
 }));
 const Profile = () => {
   const { classes } = useStyles();
   const [opened, { open, close }] = useDisclosure(false);
+  const [ModalOpened, { open: openModal, close: closeModal }] =
+    useDisclosure(false);
   const [type, setType] = useState<string>("");
 
   function changeFollowers() {
@@ -171,10 +173,12 @@ const Profile = () => {
             radius="md"
             className={classes.btn}
             ml="auto"
+            onClick={openModal}
           >
             Edit Profile
           </Button>
         )}
+        <Settings opened={ModalOpened} close={closeModal} />
       </div>
       <Body />
     </>

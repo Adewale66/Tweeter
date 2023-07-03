@@ -19,6 +19,7 @@ import UiProvider from "./context/uiProvider.tsx";
 import { AuthenticationForm } from "./components/Form.tsx";
 import { NotFoundTitle } from "./pages/Error.tsx";
 import Profile from "./pages/Profile/Profile.tsx";
+import Settings from "./pages/Profile/components/Settings.tsx";
 
 const router = createBrowserRouter([
   {

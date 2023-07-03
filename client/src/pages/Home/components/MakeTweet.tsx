@@ -10,12 +10,13 @@ import {
   createStyles,
   Popover,
   CloseButton,
+  FileInput,
   Image,
 } from "@mantine/core";
 import { IconPhoto, IconWorld, IconUsers } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useRef } from "react";
 import { useMakeTweetMutation } from "../../../slices/api/tweetApiSlice";
 import { toast } from "react-hot-toast";
 import { removeCredentials } from "../../../slices/authSlice";
@@ -87,8 +88,9 @@ const MakeTweet = () => {
   >("Everyone");
   const [tweet, setTweet] = useState<string>("");
   const [makeTweet] = useMakeTweetMutation();
-  const [selectedFile, setSelectedFile] = useState<Blob | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileRef = useRef<HTMLButtonElement>(null);
+
   const dispatch: AppDispatch = useDispatch();
 
   async function handleSubmit() {
@@ -97,14 +99,13 @@ const MakeTweet = () => {
     formData.append("preference", whoCanReply);
 
     if (selectedFile) {
-      formData.append("file", selectedFile);
+      formData.append("file", selectedFile as Blob);
     }
     try {
       await makeTweet(formData).unwrap();
       toast.success("Tweeted Successfully");
       setTweet("");
       setSelectedFile(null);
-      setPreviewImage(null);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error.status === 401) {
@@ -115,22 +116,10 @@ const MakeTweet = () => {
   }
 
   const fileUpload = () => {
-    document.getElementById("fileInput")?.click();
-  };
-
-  const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null;
-    setSelectedFile(file as Blob);
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      setPreviewImage(reader.result as string);
-    };
-    reader.readAsDataURL(file as Blob);
+    if (fileRef.current) fileRef.current.click();
   };
 
   const removeImage = () => {
-    setPreviewImage(null);
     setSelectedFile(null);
   };
 
@@ -166,7 +155,7 @@ const MakeTweet = () => {
               value={tweet}
               onChange={(e) => setTweet(e.target.value)}
             />
-            {previewImage && (
+            {selectedFile && (
               <div
                 style={{
                   overflow: "hidden",
@@ -174,7 +163,7 @@ const MakeTweet = () => {
                   position: "relative",
                 }}
               >
-                <Image src={previewImage} alt="Preview" />
+                <Image src={URL.createObjectURL(selectedFile)} alt="Preview" />
                 <div
                   style={{
                     position: "absolute",
@@ -187,13 +176,13 @@ const MakeTweet = () => {
               </div>
             )}
             <Flex gap={9} align="center" className={classes.hiddenMobile}>
-              <input
-                type="file"
-                name="imageFile"
-                id="fileInput"
+              <FileInput
                 style={{ display: "none" }}
-                onChange={handleFileUpload}
+                ref={fileRef}
+                onChange={setSelectedFile}
+                value={selectedFile}
               />
+
               <IconPhoto
                 size={20}
                 color="#2F80ED"
@@ -246,13 +235,13 @@ const MakeTweet = () => {
           </Stack>
         </Flex>
         <Flex gap={9} align="center" className={classes.hiddenDesktop}>
-          <input
-            type="file"
-            id="fileInput"
+          <FileInput
             style={{ display: "none" }}
-            name="imageFile"
-            onChange={handleFileUpload}
+            ref={fileRef}
+            onChange={setSelectedFile}
+            value={selectedFile}
           />
+
           <IconPhoto
             size={20}
             color="#2F80ED"

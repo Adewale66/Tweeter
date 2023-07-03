@@ -18,6 +18,6 @@
     }
   },
   "exclude": ["node_modules", "dist", "__tests__", "jest.config.js"],
-  "include": ["src/**/*.ts", "tests/**/*.spec.ts"],
+  "include": ["src/**/*.ts"],
   "files": ["src/index.ts"]
 }
