@@ -1,6 +1,6 @@
 import express from "express";
 import { checkToken } from "../controllers/checkToken.controller";
-import { getAccessToken } from "../middleware/middleware";
+import getAccessToken from "../middleware/requiresToken";
 import asyncHandler from "express-async-handler";
 
 const tokenRouter = express.Router();

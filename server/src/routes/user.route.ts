@@ -8,8 +8,9 @@ import {
   updateUser,
 } from "../controllers/user.controller";
 import asyncHandler from "express-async-handler";
-import { getAccessToken } from "../middleware/middleware";
+import getAccessToken from "../middleware/requiresToken";
 import { upload } from "../utils/config";
+import { validateProfileChange } from "../middleware/imageMiddleware";
 
 const userRouter = express.Router();
 
@@ -23,6 +24,7 @@ userRouter.put(
     { name: "banner", maxCount: 1 },
     { name: "profile", maxCount: 1 },
   ]),
+  asyncHandler(validateProfileChange),
   asyncHandler(updateUser)
 );
 userRouter.patch("/:id/follow", asyncHandler(followUser));

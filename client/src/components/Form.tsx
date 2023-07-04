@@ -83,12 +83,11 @@ export function AuthenticationForm() {
       }
     } else {
       try {
-        await register({ name, username, password });
+        await register({ name, username, password }).unwrap();
         const res = await login({ username, password }).unwrap();
         dispatch(setCredentials(res));
         toast.success("Registration successful");
         form.reset();
-        navigate("/");
       } catch (error) {
         console.log(error);
         toast.error("Username already exists");

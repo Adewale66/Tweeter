@@ -3,29 +3,27 @@ import request from "supertest";
 import app from "../../app";
 import { MONGODB_URI } from "../../utils/config";
 import User from "../../models/users";
+import { createUserHelper } from "../../helpers/userHelper";
 
 let token;
 let id;
+let id2;
 beforeAll(async () => {
   await mongoose.connect(MONGODB_URI);
 
-  const tempUser = new User({
-    name: "XXX",
-    username: "XXXXXX",
-    hashedPassword: "XXXXXX",
-  });
-
-  await tempUser.save();
-  id = tempUser._id.toString();
+  const tempUser = await createUserHelper("tester", "tester");
+  id2 = tempUser._id.toString();
 
   const res = await request(app).post("/api/login").send({
-    username: "XXXXX",
-    password: "XXXXXX",
+    username: "tester",
+    password: "tester",
   });
-  const test = await User.findById("648f0efc497900d8f0a2fcec");
-  test.following = [];
-  await test.save();
+  console.log(res);
+
   token = res.headers["set-cookie"];
+
+  const tempUser2 = await createUserHelper("tester2", "tester2");
+  id = tempUser2._id.toString();
 });
 
 describe("following a user", () => {
@@ -45,7 +43,7 @@ describe("following a user", () => {
       });
 
       it("should show the user as followed", async () => {
-        const user = await User.findById("648f0efc497900d8f0a2fcec");
+        const user = await User.findById(id2);
         expect(user.following.map((id) => id.toString())).toContain(id);
       });
     });
@@ -59,7 +57,7 @@ describe("following a user", () => {
       });
 
       it("should show the user as not followed", async () => {
-        const user = await User.findById("648f0efc497900d8f0a2fcec");
+        const user = await User.findById(id2);
         expect(user.following.map((id) => id.toString())).not.toContain(id);
       });
     });
@@ -76,7 +74,7 @@ describe("following a user", () => {
     describe("following same user", () => {
       it("should return a 400", async () => {
         await request(app)
-          .patch(`/api/user/648f0efc497900d8f0a2fcec/follow`)
+          .patch(`/api/user/${id2}/follow`)
           .set("Cookie", token)
           .expect(400);
       });
@@ -85,6 +83,6 @@ describe("following a user", () => {
 });
 
 afterAll(async () => {
-  await User.deleteOne({ _id: id });
+  await User.deleteMany({});
   await mongoose.connection.close();
 });

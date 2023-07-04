@@ -1,7 +1,16 @@
 import users from "../models/users";
 
-const deleteUserHelper = async () => {
-  await users.findOneAndRemove({ username: "newuser" });
+const deleteUserHelper = async (username) => {
+  await users.findOneAndRemove({ username });
 };
 
-export { deleteUserHelper };
+const createUserHelper = async (username, password) => {
+  const user = await users.create({
+    name: "testing",
+    username: username,
+    password: password,
+  });
+  return user;
+};
+
+export { deleteUserHelper, createUserHelper };

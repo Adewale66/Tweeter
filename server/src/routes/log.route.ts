@@ -1,7 +1,7 @@
 import express from "express";
 import { logUser, logUserOut } from "../controllers/login.controller";
 import asyncHandler from "express-async-handler";
-import { getAccessToken } from "../middleware/middleware";
+import getAccessToken from "../middleware/requiresToken";
 import { loginApiLimiter } from "../middleware/ratelimitmiddleware";
 
 const logRouter = express.Router();

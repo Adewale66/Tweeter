@@ -1,4 +1,4 @@
-import { ReturnTweetProps, UserProps } from "@/utils/types";
+import { ReturnTweetProps, UserProps } from "../utils/types";
 import User from "../models/users";
 import Tweet from "../models/tweet";
 import { sortTweets } from "../utils/homeTweets";

@@ -66,8 +66,9 @@ const Settings = ({
       await updateUser(form).unwrap();
       toast.success("Changes saved successfully");
       close();
-    } catch (error) {
-      toast.error("An error occured, please try again");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(error.data.message);
     }
   }
 

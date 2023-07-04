@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 import request from "supertest";
 import app from "../../app";
-import { deleteUserHelper } from "../../helpers/userHelper";
+import { createUserHelper } from "../../helpers/userHelper";
 import { MONGODB_URI } from "../../utils/config";
+import User from "../../models/users";
 
 beforeAll(async () => {
   await mongoose.connect(MONGODB_URI);
-  await deleteUserHelper();
 });
 
 describe("register api", () => {
@@ -27,11 +27,12 @@ describe("register api", () => {
   });
 
   test("should return a 400 with a username that already exists", async () => {
+    const user = await createUserHelper("tester", "tester");
     await request(app)
       .post("/api/user")
       .send({
         name: "wale",
-        username: "wale",
+        username: user.username,
         password: "wale",
       })
       .expect(400)
@@ -47,9 +48,10 @@ describe("getting users", () => {
   });
 
   test("get a particular user", async () => {
-    const res = await request(app).get("/api/user/648ccab2d7bbbda865d1b107");
+    const user = await createUserHelper("tester2", "tester2");
+    const res = await request(app).get(`/api/user/${user._id}`);
     expect(res.status).toBe(200);
-    expect(res.body.name).toBe("wale");
+    expect(res.body.name).toBe("testing");
   });
 
   test("user does not exist", async () => {
@@ -81,5 +83,6 @@ describe("delete user", () => {
 });
 
 afterAll(async () => {
+  await User.deleteMany({});
   await mongoose.connection.close();
 });

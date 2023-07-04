@@ -1,20 +1,15 @@
-import mongoose from "mongoose";
-const { Schema } = mongoose;
+import { Schema, InferSchemaType, model } from "mongoose";
 
 const commentSchema = new Schema(
   {
-    comment: String,
-    madeBy: { type: Schema.Types.ObjectId, ref: "User" },
+    comment: {
+      type: String,
+      required: true,
+    },
+    madeBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }
 );
 
-commentSchema.set("toJSON", {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString();
-    delete returnedObject._id;
-    delete returnedObject.__v;
-  },
-});
-
-export default mongoose.model("Comment", commentSchema);
+type Comment = InferSchemaType<typeof commentSchema>;
+export default model<Comment>("Comment", commentSchema);

@@ -1,6 +1,6 @@
 import express from "express";
 import asyncHandler from "express-async-handler";
-import { getAccessToken } from "../middleware/middleware";
+import getAccessToken from "../middleware/requiresToken";
 import {
   getExploreTweets,
   getHomeTweets,

@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../models/users";
+import { RequestHandler } from "express";
 
 /**
  * @desc log a user in
@@ -8,13 +9,16 @@ import User from "../models/users";
  * @access Public
  */
 
-const logUser = async (req, res) => {
+const logUser: RequestHandler = async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password)
     return res.status(400).json({ message: "Missing email or password" });
 
-  const user = await User.findOne({ username });
+  const user = await User.findOne({ username }).collation({
+    locale: "en",
+    strength: 2,
+  });
   if (!user) return res.status(400).json({ message: "User not found" });
   const { hashedPassword } = user;
   const correctPassword = await bcrypt.compare(password, hashedPassword);
@@ -51,7 +55,7 @@ const logUser = async (req, res) => {
  * @access Private
  */
 
-const logUserOut = async (req, res) => {
+const logUserOut: RequestHandler = async (req, res) => {
   res
     .clearCookie("access_token", {
       httpOnly: true,

@@ -16,7 +16,7 @@ import {
 import { IconPhoto, IconWorld, IconUsers } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
-import { ChangeEvent, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useMakeTweetMutation } from "../../../slices/api/tweetApiSlice";
 import { toast } from "react-hot-toast";
 import { removeCredentials } from "../../../slices/authSlice";
@@ -111,6 +111,8 @@ const MakeTweet = () => {
       if (error.status === 401) {
         dispatch(removeCredentials());
         toast.error("Session expired, please login again");
+      } else if (error.status === "PARSING_ERROR") {
+        toast.error(error.data);
       } else toast.error("Something went wrong");
     }
   }

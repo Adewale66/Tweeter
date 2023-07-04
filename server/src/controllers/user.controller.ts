@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "../models/users";
+import { RequestHandler } from "express";
 
 /**
  * @desc Create a user
@@ -7,7 +8,7 @@ import User from "../models/users";
  * @access Public
  */
 
-const CreateUser = async (req, res) => {
+const CreateUser: RequestHandler = async (req, res) => {
   const { name, username, password } = req.body;
   if (!name || !username || !password)
     return res.status(400).json({ message: "Please fill all fields" });
@@ -29,9 +30,8 @@ const CreateUser = async (req, res) => {
  * @access Public
  */
 
-const getUser = async (req, res) => {
-  const username = req.params.id;
-  const user = await User.find({ username })
+const getUser: RequestHandler = async (req, res) => {
+  const user = await User.find({ username: req.params.id })
     .populate(["followers", "following"])
     .populate({
       path: "tweets.tweet",
@@ -60,7 +60,7 @@ const getUser = async (req, res) => {
  * @access Public
  */
 
-const getAllUsers = async (req, res) => {
+const getAllUsers: RequestHandler = async (req, res) => {
   const users = await User.find({});
   res.status(200).json(users);
 };

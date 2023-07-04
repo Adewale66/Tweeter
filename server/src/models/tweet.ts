@@ -1,9 +1,11 @@
-import mongoose from "mongoose";
-const { Schema } = mongoose;
+import { Schema, InferSchemaType, model } from "mongoose";
 
 const tweetSchema = new Schema(
   {
-    tweet: String,
+    tweet: {
+      type: String,
+      required: true,
+    },
     likes: {
       type: Number,
       default: 0,
@@ -25,6 +27,7 @@ const tweetSchema = new Schema(
     madeBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
 
     image: String,
@@ -33,12 +36,5 @@ const tweetSchema = new Schema(
   { timestamps: true }
 );
 
-tweetSchema.set("toJSON", {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString();
-    delete returnedObject._id;
-    delete returnedObject.__v;
-  },
-});
-
-export default mongoose.model("Tweet", tweetSchema);
+type Tweet = InferSchemaType<typeof tweetSchema>;
+export default model<Tweet>("Tweet", tweetSchema);

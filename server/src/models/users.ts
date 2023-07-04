@@ -1,8 +1,7 @@
-import mongoose from "mongoose";
+import { InferSchemaType, model, Schema } from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
-const { Schema } = mongoose;
 
-const User = new Schema({
+const userSchema = new Schema({
   name: String,
   username: {
     unique: true,
@@ -52,9 +51,9 @@ const User = new Schema({
   ],
 });
 
-User.plugin(uniqueValidator);
+userSchema.plugin(uniqueValidator);
 
-User.set("toJSON", {
+userSchema.set("toJSON", {
   transform: (document, r) => {
     r.id = r._id;
     delete r._id;
@@ -63,4 +62,6 @@ User.set("toJSON", {
   },
 });
 
-export default mongoose.model("User", User);
+type User = InferSchemaType<typeof userSchema>;
+
+export default model<User>("User", userSchema);

@@ -1,4 +1,3 @@
-import User from "../models/users";
 import Comment from "../models/comment";
 import Tweet from "../models/tweet";
 
@@ -23,7 +22,7 @@ const makeComment = async (req, res) => {
   });
   await NewComment.save();
 
-  tweet.comments = [...tweet.comments, NewComment._id];
+  tweet.comments = tweet.comments.concat(NewComment._id);
   await tweet.save();
 
   res.status(200).json({ message: "Comment made" });
