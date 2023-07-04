@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
-
-dotenv.config();
 import path from "path";
 import multer from "multer";
+
+dotenv.config();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -30,7 +30,6 @@ const port = process.env.PORT || 8000;
 
 const NodeEnv = process.env.NODE_ENV;
 
-const MONGODB_URI =
-  NodeEnv === "test" ? process.env.TEST_MONGODB_URI : process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI;
 
 export { MONGODB_URI, port, upload, NodeEnv };

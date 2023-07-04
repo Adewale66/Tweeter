@@ -1,15 +1,14 @@
 import mongoose from "mongoose";
 import app from "./app";
 import { MONGODB_URI, port } from "./utils/config";
-import { info, errorInfo } from "./utils/logger";
 
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
-    info("db connected");
+    console.log("db connected");
   })
   .catch((error) => {
-    errorInfo(error);
+    console.log(error);
   });
 
 app.listen(port, () => {
