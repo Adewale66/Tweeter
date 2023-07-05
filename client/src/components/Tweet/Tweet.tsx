@@ -13,6 +13,7 @@ import Interact from "./Interact";
 import Reply from "./Reply";
 import Comments from "./Comments";
 import { Link } from "react-router-dom";
+import { IconRefresh } from "@tabler/icons-react";
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -26,13 +27,24 @@ const useStyles = createStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     gap: "0.5rem",
-    marginBottom: "2rem",
+    marginBottom: "3rem",
+    position: "relative",
+  },
+  retweeted: {
+    position: "absolute",
+    top: "-3%",
   },
 }));
 const Tweet = () => {
   const { classes, theme } = useStyles();
   return (
     <Container className={classes.container} size="xs">
+      <Flex gap={5} align="center" className={classes.retweeted}>
+        <IconRefresh width={20} height={20} strokeWidth={1.5} />
+        <Text fw={500} fz={14}>
+          Adewale kujore Retweeted
+        </Text>
+      </Flex>
       <Group>
         <Avatar
           src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&w=1000&q=80"

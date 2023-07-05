@@ -19,7 +19,8 @@ import { AppDispatch, RootState } from "../../../store";
 import { useState, useRef } from "react";
 import { useMakeTweetMutation } from "../../../slices/api/tweetApiSlice";
 import { toast } from "react-hot-toast";
-import { removeCredentials } from "../../../slices/authSlice";
+import { changeToken, removeCredentials } from "../../../slices/authSlice";
+import { useCheckTokenMutation } from "../../../slices/api/userApiSlice";
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -90,8 +91,10 @@ const MakeTweet = () => {
   const [makeTweet] = useMakeTweetMutation();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileRef = useRef<HTMLButtonElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
 
   const dispatch: AppDispatch = useDispatch();
+  const [token] = useCheckTokenMutation();
 
   async function handleSubmit() {
     const formData = new FormData();
@@ -108,9 +111,20 @@ const MakeTweet = () => {
       setSelectedFile(null);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      if (error.status === 401) {
-        dispatch(removeCredentials());
-        toast.error("Session expired, please login again");
+      if (error.data.error === "token expired") {
+        try {
+          if (user) {
+            const res = await token({
+              username: user?.username,
+              id: user?.id,
+            }).unwrap();
+            dispatch(changeToken(res));
+            btnRef.current?.click();
+          }
+        } catch (error) {
+          toast.error("Session expired, please log in");
+          dispatch(removeCredentials());
+        }
       } else if (error.status === "PARSING_ERROR") {
         toast.error(error.data);
       } else toast.error("Something went wrong");
@@ -230,7 +244,11 @@ const MakeTweet = () => {
                   </Flex>
                 </Popover.Dropdown>
               </Popover>
-              <Button className={classes.btn} onClick={handleSubmit}>
+              <Button
+                className={classes.btn}
+                onClick={handleSubmit}
+                ref={btnRef}
+              >
                 Tweet
               </Button>
             </Flex>

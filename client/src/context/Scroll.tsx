@@ -2,7 +2,7 @@ import { IconArrowUp } from "@tabler/icons-react";
 import { useWindowScroll } from "@mantine/hooks";
 import { Affix, Button, Transition, rem } from "@mantine/core";
 
-function Demo() {
+function WindowScroll() {
   const [scroll, scrollTo] = useWindowScroll();
 
   return (
@@ -24,4 +24,4 @@ function Demo() {
   );
 }
 
-export default Demo;
+export default WindowScroll;

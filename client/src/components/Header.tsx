@@ -22,7 +22,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
 import toast from "react-hot-toast";
 import { useLogoutMutation } from "../slices/api/logApiSlice";
-import { removeCredentials } from "../slices/authSlice";
+import { changeToken, removeCredentials } from "../slices/authSlice";
+import { useCheckTokenMutation } from "../slices/api/userApiSlice";
+import { useRef } from "react";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -35,12 +37,13 @@ const useStyles = createStyles((theme) => ({
     color: theme.colorScheme === "dark" ? theme.white : theme.black,
     fontWeight: 500,
     fontSize: theme.fontSizes.sm,
-
     [theme.fn.smallerThan("sm")]: {
       height: rem(42),
       display: "flex",
       alignItems: "center",
       width: "100%",
+      backgroundColor: "transparent",
+      border: 0,
     },
 
     ...theme.fn.hover({
@@ -102,21 +105,32 @@ export function HeaderMegaMenu() {
   const { colorScheme } = useMantineColorScheme();
   const dispatch: AppDispatch = useDispatch();
   const [logout] = useLogoutMutation();
+  const [token] = useCheckTokenMutation();
+  const btnRef = useRef<HTMLButtonElement>(null);
 
   async function logoutUser() {
     try {
-      await logout()
-        .unwrap()
-        .then(() => {
-          toast.success("Logged out");
+      await logout().unwrap();
+      dispatch(removeCredentials());
+      toast.success("Successfully logged out");
+      closeDrawer();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.data.error === "token expired") {
+        try {
+          if (user) {
+            const res = await token({
+              username: user?.username,
+              id: user?.id,
+            }).unwrap();
+            dispatch(changeToken(res));
+            btnRef.current?.click();
+          }
+        } catch (error) {
+          toast.error("Session expired, please log in");
           dispatch(removeCredentials());
-        })
-        .catch((err) => {
-          if (err.status === 401)
-            toast.error("Token expired please login again");
-        });
-    } catch (error) {
-      toast.error("Something went wrong");
+        }
+      } else toast.error("Something went wrong");
     }
   }
 
@@ -143,6 +157,11 @@ export function HeaderMegaMenu() {
 
           <Group className={classes.hiddenMobile}>
             {user && <User username={user.username} />}
+            {!user && (
+              <Button component={Link} to={"/login"}>
+                Login
+              </Button>
+            )}
           </Group>
 
           <Burger
@@ -169,30 +188,47 @@ export function HeaderMegaMenu() {
           />
 
           <ThemeToggle />
-          <Link to={"/"} className={classes.link}>
+          <Link to={"/"} className={classes.link} onClick={closeDrawer}>
             Home
           </Link>
           {user && (
-            <Link to={"/profile"} className={classes.link}>
+            <Link
+              to={"/profile"}
+              className={classes.link}
+              onClick={closeDrawer}
+            >
               Profile
             </Link>
           )}
 
-          <Link to={"/explore"} className={classes.link}>
+          <Link to={"/explore"} className={classes.link} onClick={closeDrawer}>
             Explore
           </Link>
-          <Link to={"/bookmarks"} className={classes.link}>
+          <Link
+            to={"/bookmarks"}
+            className={classes.link}
+            onClick={closeDrawer}
+          >
             Bookmarks
           </Link>
 
           {user && (
-            <Link to={"/settings"} className={classes.link}>
+            <Link
+              to={"/settings"}
+              className={classes.link}
+              onClick={closeDrawer}
+            >
               Settings
             </Link>
           )}
 
           {user && (
-            <Text className={classes.link} onClick={logoutUser}>
+            <Text
+              component="button"
+              className={classes.link}
+              onClick={logoutUser}
+              ref={btnRef}
+            >
               Logout
             </Text>
           )}

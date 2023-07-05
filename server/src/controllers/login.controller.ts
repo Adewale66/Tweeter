@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../models/users";
 import { RequestHandler } from "express";
+import { generateAccessToken, generateRefreshToken } from "../middleware/Token";
 
 /**
  * @desc log a user in
@@ -30,22 +31,22 @@ const logUser: RequestHandler = async (req, res) => {
     id: user._id,
   };
 
-  const token = jwt.sign(tokenUser, process.env.TOKEN_SECRET, {
-    expiresIn: "2h",
-  });
+  const access_token = generateAccessToken(tokenUser);
+  const refreshToken = generateRefreshToken(tokenUser);
 
   res
     .status(200)
-    .cookie("access_token", token, {
+    .cookie("refresh_token", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 60 * 60 * 60 * 60,
+      maxAge: 864000000,
     })
     .json({
       id: user._id,
       name: user.name,
       username: user.username,
+      access_token: access_token,
     });
 };
 
@@ -57,7 +58,7 @@ const logUser: RequestHandler = async (req, res) => {
 
 const logUserOut: RequestHandler = async (req, res) => {
   res
-    .clearCookie("access_token", {
+    .clearCookie("refresh_token", {
       httpOnly: true,
       expires: new Date(0),
     })

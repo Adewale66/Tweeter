@@ -78,7 +78,7 @@ const deleteUser = async (req, res) => {
 
 /**
  * @desc follow another user
- * @route PATCH /userId/follow
+ * @route POST /userId/follow
  * @access Private
  */
 
@@ -92,25 +92,49 @@ const followUser = async (req, res) => {
 
   const followingUser = await User.findById(req.user.id);
 
-  if (followingUser.following.map((id) => id.toString()).includes(userId)) {
-    followedUser.followers = followedUser.followers.filter(
-      (id) => id.toString() !== req.user.id
-    );
-    await followedUser.save();
+  if (followingUser.following.map((id) => id.toString()).includes(userId))
+    return res
+      .status(400)
+      .json({ message: "You are already following this user" });
 
-    followingUser.following = followingUser.following.filter(
-      (id) => id.toString() !== userId
-    );
-    await followingUser.save();
-  } else {
-    followedUser.followers.push(req.user.id);
-    await followedUser.save();
+  followedUser.followers.push(req.user.id);
+  await followedUser.save();
 
-    followingUser.following.push(userId);
-    await followingUser.save();
-  }
+  followingUser.following.push(userId);
+  await followingUser.save();
 
-  res.status(200).json({ message: "Success" });
+  res.status(200).json({ message: "User Followed" });
+};
+
+/**
+ * @desc follow another user
+ * @route POST /userId/follow
+ * @access Private
+ */
+
+const unFollowUser = async (req, res) => {
+  const userId = req.params.id;
+
+  if (userId === req.user.id)
+    return res.status(400).json({ message: "You can't unfollow yourself" });
+
+  const followedUser = await User.findById(userId);
+
+  const followingUser = await User.findById(req.user.id);
+
+  if (!followingUser.following.map((id) => id.toString()).includes(userId))
+    return res.status(400).json({ message: "You are not following this user" });
+
+  followedUser.followers = followedUser.followers.filter(
+    (t) => t._id.toString() !== followingUser._id.toString()
+  );
+  await followedUser.save();
+  followingUser.following = followingUser.following.filter(
+    (t) => t._id.toString() !== followedUser._id.toString()
+  );
+  await followingUser.save();
+
+  return res.status(200).json({ message: "User Unfollowed" });
 };
 
 /**
@@ -150,4 +174,12 @@ const updateUser = async (req, res) => {
   res.status(200).json({ message: "User updated" });
 };
 
-export { CreateUser, getUser, getAllUsers, deleteUser, followUser, updateUser };
+export {
+  CreateUser,
+  getUser,
+  getAllUsers,
+  deleteUser,
+  followUser,
+  unFollowUser,
+  updateUser,
+};

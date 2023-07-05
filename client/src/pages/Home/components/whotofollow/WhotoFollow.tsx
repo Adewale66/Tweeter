@@ -28,8 +28,6 @@ const WhotoFollow = () => {
       </Stack>
       <Stack>
         <UserCard />
-        <Divider />
-        <UserCard />
       </Stack>
     </Stack>
   );

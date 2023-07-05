@@ -14,8 +14,14 @@ import {
 import { useMediaQuery } from "@mantine/hooks";
 import { useRef, useState } from "react";
 import { IconCameraPlus } from "@tabler/icons-react";
-import { useUpdateUserMutation } from "../../../slices/api/userApiSlice";
+import {
+  useCheckTokenMutation,
+  useUpdateUserMutation,
+} from "../../../slices/api/userApiSlice";
 import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../store";
+import { changeToken, removeCredentials } from "../../../slices/authSlice";
 
 const useStyles = createStyles((theme) => ({
   icon: {
@@ -42,6 +48,11 @@ const Settings = ({
   const [description, setDescription] = useState("");
   const [username, setUsername] = useState("");
   const [updateUser] = useUpdateUserMutation();
+  const [token] = useCheckTokenMutation();
+  const user = useSelector((state: RootState) => state.auth.userInfo);
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  const dispatch: AppDispatch = useDispatch();
 
   function changeBanner() {
     if (bannerRef.current) {
@@ -68,7 +79,24 @@ const Settings = ({
       close();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      toast.error(error.data.message);
+      if (error.data.error === "token expired") {
+        try {
+          if (user) {
+            const res = await token({
+              username: user?.username,
+              id: user?.id,
+            }).unwrap();
+            dispatch(changeToken(res));
+            btnRef.current?.click();
+          }
+        } catch (error) {
+          toast.error("Session expired, please log in");
+          dispatch(removeCredentials());
+        }
+      } else if (error.status === "PARSING_ERROR") {
+        toast.error(error.data);
+      } else if (error.data.message) toast.error(error.data.message);
+      else toast.error("Something went wrong");
     }
   }
 
@@ -156,7 +184,9 @@ const Settings = ({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <Button onClick={saveChanges}>Save</Button>
+        <Button ref={btnRef} onClick={saveChanges}>
+          Save
+        </Button>
       </Stack>
     </Modal>
   );

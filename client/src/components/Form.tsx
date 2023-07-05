@@ -71,7 +71,6 @@ export function AuthenticationForm() {
     if (type === "login") {
       try {
         const res = await login({ username, password }).unwrap();
-
         dispatch(setCredentials(res));
         toast.success("Welcome back");
         form.reset();

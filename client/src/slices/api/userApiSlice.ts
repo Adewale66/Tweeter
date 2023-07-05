@@ -12,10 +12,14 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: body,
       }),
     }),
-    checkToken: builder.mutation<{ message: string }, void>({
-      query: () => ({
+    checkToken: builder.mutation<
+      { message: string },
+      { username: string; id: string }
+    >({
+      query: (body) => ({
         url: "checkToken",
         method: "POST",
+        body: body,
       }),
     }),
     updateUser: builder.mutation<void, FormData>({

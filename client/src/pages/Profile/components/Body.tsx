@@ -19,6 +19,7 @@ const useStyles = createStyles((theme) => ({
         : theme.colors.gray[0],
     [theme.fn.smallerThan("md")]: {
       flexGrow: 1,
+      marginBottom: "2rem",
     },
   },
   text: {
@@ -33,7 +34,7 @@ const Body = () => {
   return (
     <Box className={classes.container}>
       <Flex justify="space-between" wrap="wrap" gap={12}>
-        <Stack w={250} h={184} p={12} className={classes.stack}>
+        <Stack w={250} h="fit-content" p={12} className={classes.stack}>
           <Text fz={14} fw={600} className={classes.text}>
             Tweets
           </Text>
