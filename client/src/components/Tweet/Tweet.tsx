@@ -14,79 +14,104 @@ import Reply from "./Reply";
 import Comments from "./Comments";
 import { Link } from "react-router-dom";
 import { IconRefresh } from "@tabler/icons-react";
+import { TweetProps } from "../../types/user";
 
 const useStyles = createStyles((theme) => ({
   container: {
-    backgroundColor:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[6]
-        : theme.colors.gray[0],
-    padding: "1rem",
-    borderRadius: "0.5rem",
-    color: theme.colorScheme === "dark" ? theme.white : theme.black,
+    padding: "0",
     display: "flex",
     flexDirection: "column",
     gap: "0.5rem",
     marginBottom: "3rem",
-    position: "relative",
   },
   retweeted: {
-    position: "absolute",
-    top: "-3%",
+    position: "relative",
+    backgroundColor: theme.colorScheme === "light" ? "#e0e0e0" : "#1A1B1E",
+    color: theme.colorScheme === "dark" ? theme.white : theme.colors.gray[6],
+  },
+  body: {
+    padding: "1rem",
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.8rem",
+    backgroundColor:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[6]
+        : theme.colors.gray[0],
+    borderRadius: "0.5rem",
   },
 }));
-const Tweet = () => {
+const Tweet = ({ tweet }: { tweet: TweetProps }) => {
+  const date = new Date(tweet.tweet.createdAt);
+  const options: Intl.DateTimeFormatOptions = {
+    month: "long",
+    day: "numeric",
+    hour12: false,
+    hour: "numeric",
+    minute: "numeric",
+    timeZone: "UTC",
+  };
+  const formatter = new Intl.DateTimeFormat("en-US", options);
+  const formattedDate = formatter.format(date);
+
   const { classes, theme } = useStyles();
   return (
     <Container className={classes.container} size="xs">
-      <Flex gap={5} align="center" className={classes.retweeted}>
-        <IconRefresh width={20} height={20} strokeWidth={1.5} />
-        <Text fw={500} fz={14}>
-          Adewale kujore Retweeted
-        </Text>
-      </Flex>
-      <Group>
-        <Avatar
-          src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&w=1000&q=80"
-          alt="wale"
-          radius="md"
-        />
-        <div>
-          <Text fz="sm" component={Link} to="/admin">
-            Adewale Kujore
+      {tweet.retweeted && (
+        <Flex gap={5} align="center" className={classes.retweeted}>
+          <IconRefresh width={20} height={20} strokeWidth={1.5} />
+          <Text fw={500} fz={14}>
+            Adewale kujore retweeted
           </Text>
-          <Text fz="xs" c="dimmed">
-            August 24th at 20:43
+        </Flex>
+      )}
+      <div className={classes.body}>
+        <Group>
+          <Avatar
+            src={tweet.tweet.madeBy.profileimage}
+            alt="wale"
+            radius="md"
+          />
+          <div>
+            <Text fz="sm" component={Link} to="/admin">
+              {tweet.tweet.madeBy.username}
+            </Text>
+            <Text fz="xs" c="dimmed">
+              {formattedDate}
+            </Text>
+          </div>
+        </Group>
+        <Text>{tweet.tweet.tweet}</Text>
+        {tweet.tweet.image && (
+          <Image
+            mx="auto"
+            radius="md"
+            alt="random"
+            src={tweet.tweet.image}
+            withPlaceholder
+          />
+        )}
+        <Flex gap={8}>
+          <Text fz="xs" ml="auto" color="grey">
+            {tweet.tweet.comments.length} comments
           </Text>
-        </div>
-      </Group>
-      <Text>This is a Tweet.</Text>
-      <Image
-        src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&w=1000&q=80"
-        mx="auto"
-        radius="md"
-        alt="random"
-      />
-      <Flex gap={8}>
-        <Text fz="xs" ml="auto" color="grey">
-          449 comments
-        </Text>
-        <Text fz="xs" color="grey">
-          {" "}
-          59k Retweets
-        </Text>
-        <Text fz="xs" color="grey">
-          234 Saved
-        </Text>
-      </Flex>
-      <Divider color={theme.colorScheme === "dark" ? "gray.7" : "gray.3"} />
-      <Interact />
-      <Divider color={theme.colorScheme === "dark" ? "gray.7" : "gray.3"} />
-      <Reply />
-      <Comments />
-      <Comments />
-      <Comments />
-      <Comments />
+          <Text fz="xs" color="grey">
+            {" "}
+            {tweet.tweet.retweets} Retweets
+          </Text>
+          <Text fz="xs" color="grey">
+            {tweet.tweet.saves} Saved
+          </Text>
+        </Flex>
+        <Divider color={theme.colorScheme === "dark" ? "gray.7" : "gray.3"} />
+        <Interact />
+        <Divider color={theme.colorScheme === "dark" ? "gray.7" : "gray.3"} />
+        <Reply />
+        {tweet.tweet.comments.length > 0 &&
+          tweet.tweet.comments.map((c) => (
+            <Comments key={c.createdAt} id={tweet.tweet._id} comment={c} />
+          ))}
+      </div>
     </Container>
   );
 };

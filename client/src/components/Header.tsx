@@ -175,11 +175,16 @@ export function HeaderMegaMenu() {
       <Drawer
         opened={drawerOpened}
         onClose={closeDrawer}
-        size="100%"
-        padding="md"
-        title="Navigation"
+        size="75%"
+        padding="xs"
         className={classes.hiddenDesktop}
         zIndex={1000000}
+        withCloseButton={false}
+        transitionProps={{
+          transition: "rotate-left",
+          duration: 150,
+          timingFunction: "linear",
+        }}
       >
         <ScrollArea h={`calc(100vh - ${rem(60)})`} mx="-md">
           <Divider
@@ -211,16 +216,6 @@ export function HeaderMegaMenu() {
           >
             Bookmarks
           </Link>
-
-          {user && (
-            <Link
-              to={"/settings"}
-              className={classes.link}
-              onClick={closeDrawer}
-            >
-              Settings
-            </Link>
-          )}
 
           {user && (
             <Text

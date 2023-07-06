@@ -46,7 +46,20 @@ const createTweet = async (req, res) => {
 const getTweet = async (req, res) => {
   const id = req.params.id;
 
-  const tweet = await Tweet.findById(id).populate(["madeBy", "comments"]);
+  const tweet = await Tweet.findById(id)
+    .populate({
+      path: "comments",
+      populate: {
+        path: "madeBy",
+        model: "User",
+        select: "username profileimage",
+      },
+    })
+    .populate({
+      path: "madeBy",
+      model: "User",
+      select: "username profileimage",
+    });
   if (tweet === null)
     return res.status(404).json({ message: "Tweet not found" });
   return res.status(200).json(tweet);

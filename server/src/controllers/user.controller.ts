@@ -31,13 +31,14 @@ const CreateUser: RequestHandler = async (req, res) => {
  */
 
 const getUser: RequestHandler = async (req, res) => {
-  const user = await User.find({ username: req.params.id })
+  const user = await User.findOne({ username: req.params.id })
     .populate(["followers", "following"])
     .populate({
       path: "tweets.tweet",
       populate: {
         path: "madeBy",
         model: "User",
+        select: "username profileimage",
       },
     })
     .populate({
@@ -47,6 +48,7 @@ const getUser: RequestHandler = async (req, res) => {
         populate: {
           path: "madeBy",
           model: "User",
+          select: "username profileimage",
         },
       },
     });

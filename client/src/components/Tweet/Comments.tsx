@@ -25,31 +25,50 @@ const useStyles = createStyles((theme) => ({
     backgroundColor:
       theme.colorScheme === "dark" ? theme.colors.dark[7] : "white",
     borderRadius: "0.5rem",
+    width: "100%",
   },
 }));
 
-const Comments = () => {
+const Comments = ({
+  id,
+  comment,
+}: {
+  id: string;
+  comment: {
+    comment: string;
+    madeBy: {
+      username: string;
+      profileimage: string;
+    };
+    createdAt: string;
+  };
+}) => {
   const { classes } = useStyles();
+  const date = new Date(comment.createdAt);
+  const options: Intl.DateTimeFormatOptions = {
+    month: "long",
+    day: "numeric",
+    hour12: false,
+    hour: "numeric",
+    minute: "numeric",
+    timeZone: "UTC",
+  };
+  const formatter = new Intl.DateTimeFormat("en-US", options);
+  const formattedDate = formatter.format(date);
   return (
     <Box mt={6}>
       <Flex gap={10}>
-        <Avatar
-          src="http://localhost:8000/uploads/tree-736885_1280.jpg"
-          alt="wale"
-          radius="md"
-        />
+        <Avatar alt="wale" radius="md" src={comment.madeBy.profileimage} />
         <Stack spacing="sm" className={classes.comments}>
           <Group align="center">
             <Text fz="0.85rem" fw={500}>
-              Adewale Kujore
+              {comment.madeBy.username}
             </Text>
             <Text fz="0.65rem" fw={500} c="dimmed">
-              24 August 20:43
+              {formattedDate}
             </Text>
           </Group>
-          <Text>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam,
-          </Text>
+          <Text>{comment.comment}</Text>
         </Stack>
       </Flex>
     </Box>

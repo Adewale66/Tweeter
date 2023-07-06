@@ -14,6 +14,8 @@ import { useState } from "react";
 import Body from "./components/Body";
 import { Link } from "react-router-dom";
 import Settings from "./components/Settings";
+import { useParams } from "react-router-dom";
+import { useGetProfileDataQuery } from "../../slices/api/userApiSlice";
 
 const useStyles = createStyles((theme) => ({
   image: {
@@ -100,6 +102,12 @@ const Profile = () => {
   const [ModalOpened, { open: openModal, close: closeModal }] =
     useDisclosure(false);
   const [type, setType] = useState<string>("");
+  const { profile } = useParams();
+  const { data, isLoading } = useGetProfileDataQuery({
+    name: profile as string,
+  });
+
+  if (isLoading) return <h1>Loading....</h1>;
 
   function changeFollowers() {
     setType("followers");
@@ -180,7 +188,7 @@ const Profile = () => {
         )}
         <Settings opened={ModalOpened} close={closeModal} />
       </div>
-      <Body />
+      {data?.tweets && data.tweets.length > 0 && <Body tweets={data.tweets} />}
     </>
   );
 };

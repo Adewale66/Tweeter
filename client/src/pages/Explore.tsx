@@ -19,8 +19,6 @@ const Explore = () => {
           timingFunction: "ease",
         }}
       />
-      <Tweet />
-      <Tweet />
     </Container>
   );
 };

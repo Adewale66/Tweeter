@@ -1,5 +1,6 @@
 import { Box, Flex, Stack, Text, createStyles } from "@mantine/core";
 import Tweet from "../../../components/Tweet/Tweet";
+import { TweetProps } from "../../../types/user";
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -29,7 +30,15 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const Body = () => {
+const Body = ({ tweets }: { tweets: TweetProps[] }) => {
+  const temp = [...tweets];
+  temp.sort((a, b) => {
+    const time1 = new Date(a.tweet.createdAt);
+    const time2 = new Date(b.tweet.createdAt);
+    return time2.getTime() - time1.getTime();
+  });
+  console.log(temp);
+
   const { classes } = useStyles();
   return (
     <Box className={classes.container}>
@@ -49,8 +58,9 @@ const Body = () => {
           </Text>
         </Stack>
         <div>
-          <Tweet />
-          <Tweet />
+          {temp.map((tweet) => (
+            <Tweet key={tweet.tweet._id} tweet={tweet} />
+          ))}
         </div>
       </Flex>
     </Box>

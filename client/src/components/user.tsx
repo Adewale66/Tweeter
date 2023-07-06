@@ -7,12 +7,7 @@ import {
   Group,
   Divider,
 } from "@mantine/core";
-import {
-  IconChevronDown,
-  IconSettings,
-  IconUser,
-  IconLogout,
-} from "@tabler/icons-react";
+import { IconChevronDown, IconUser, IconLogout } from "@tabler/icons-react";
 import { useLogoutMutation } from "../slices/api/logApiSlice";
 import { changeToken, removeCredentials } from "../slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -76,10 +71,7 @@ const User = ({ username }: { username: string }) => {
             </Text>
           </Group>
 
-          <Group position="left">
-            <IconSettings />
-            <Text style={{ cursor: "pointer" }}>Settings</Text>
-          </Group>
+          <Group position="left"></Group>
           <Divider />
           <Group position="left">
             <IconLogout color="red" />

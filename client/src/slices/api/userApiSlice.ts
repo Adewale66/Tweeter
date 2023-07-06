@@ -1,3 +1,4 @@
+import { UserProps } from "../../types/user";
 import { apiSlice } from "./apiSlice";
 
 export const userApiSlice = apiSlice.injectEndpoints({
@@ -29,6 +30,9 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: body,
       }),
     }),
+    getProfileData: builder.query<UserProps, { name: string }>({
+      query: (body) => `user/${body.name}`,
+    }),
   }),
 });
 
@@ -36,4 +40,5 @@ export const {
   useRegisterUserMutation,
   useCheckTokenMutation,
   useUpdateUserMutation,
+  useGetProfileDataQuery,
 } = userApiSlice;

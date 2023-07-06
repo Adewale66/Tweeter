@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { FooterSocial } from "./components/Footer";
 import { HeaderMegaMenu } from "./components/Header";
 import UiProvider from "./context/uiProvider";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -25,7 +24,6 @@ function App() {
       >
         <HeaderMegaMenu />
         <Outlet />
-        <FooterSocial />
       </div>
     </UiProvider>
   );

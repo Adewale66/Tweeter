@@ -32,5 +32,18 @@ export interface TweetProps {
   saved: boolean;
   retweeted: boolean;
   timeMade: string;
+}
+
+export interface HomeTweetProps extends TweetProps {
   retweetedBy: string;
+}
+
+export interface UserProps {
+  bannerImage: string;
+  description: string;
+  followers: [];
+  following: [];
+  username: string;
+  profileimage: string;
+  tweets: TweetProps[];
 }

@@ -7,12 +7,7 @@ const Home = () => {
   return (
     <div style={{ position: "relative", padding: "1.25rem 0.625rem" }}>
       <MakeTweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
+
       <div style={{ position: "absolute", top: "1.25rem", right: "4.375rem" }}>
         <Trends />
         <WhotoFollow />
