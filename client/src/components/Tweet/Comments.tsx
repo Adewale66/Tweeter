@@ -30,10 +30,8 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const Comments = ({
-  id,
   comment,
 }: {
-  id: string;
   comment: {
     comment: string;
     madeBy: {

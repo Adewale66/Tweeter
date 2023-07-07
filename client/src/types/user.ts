@@ -3,6 +3,7 @@ export interface UserToken {
   name: string;
   username: string;
   access_token: string;
+  image: string;
 }
 
 export interface TweetProps {
@@ -32,18 +33,22 @@ export interface TweetProps {
   saved: boolean;
   retweeted: boolean;
   timeMade: string;
-}
-
-export interface HomeTweetProps extends TweetProps {
-  retweetedBy: string;
+  retweetedBy?: string;
 }
 
 export interface UserProps {
   bannerImage: string;
   description: string;
-  followers: [];
-  following: [];
+  followers: FollowProps[];
+  following: FollowProps[];
   username: string;
   profileimage: string;
   tweets: TweetProps[];
+  id: string;
+}
+
+export interface FollowProps {
+  username: string;
+  profileimage: string;
+  id: string;
 }

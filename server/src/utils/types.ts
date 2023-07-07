@@ -4,7 +4,7 @@ export interface UserProps {
   profileimage: string;
 }
 
-interface TweetProps {
+export interface TweetProps {
   tweet: {
     _id: string;
     tweet: string;

@@ -75,7 +75,9 @@ export function sortTweets(users: UserProps[], req: { user: { username } }) {
     } else temp.push(tweets[i]);
   }
   temp.sort((a, b) => {
-    return new Date(b.timeMade).getTime() - new Date(a.timeMade).getTime();
+    const time1 = new Date(a.tweet.createdAt);
+    const time2 = new Date(b.tweet.createdAt);
+    return time2.getTime() - time1.getTime();
   });
   return temp;
 }

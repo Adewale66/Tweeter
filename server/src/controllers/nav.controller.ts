@@ -1,4 +1,4 @@
-import { ReturnTweetProps, UserProps } from "../utils/types";
+import { ReturnTweetProps, TweetProps, UserProps } from "../utils/types";
 import User from "../models/users";
 import Tweet from "../models/tweet";
 import { sortTweets } from "../utils/homeTweets";
@@ -44,10 +44,7 @@ const getHomeTweets = async (req, res) => {
  */
 
 const getExploreTweets = async (req, res) => {
-  const user = await User.findById(req.user.id);
-  const users: UserProps[] = await Tweet.find({
-    madeBy: { $nin: [...user.following, user._id] },
-  })
+  const tweets: TweetProps[] = await Tweet.find({})
     .populate({
       path: "madeBy",
       model: "User",
@@ -62,7 +59,7 @@ const getExploreTweets = async (req, res) => {
       },
     });
 
-  return res.status(200).json(users);
+  return res.status(200).json(tweets);
 };
 
 /**

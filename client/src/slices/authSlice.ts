@@ -7,6 +7,7 @@ interface UserInfo {
     name: string;
     username: string;
     access_token: string;
+    image: string;
   } | null;
 }
 

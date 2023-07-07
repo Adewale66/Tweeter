@@ -1,6 +1,6 @@
 import express from "express";
 import asyncHandler from "express-async-handler";
-import getAccessToken from "../middleware/Token";
+import { getRefreshToken } from "../middleware/Token";
 import {
   getExploreTweets,
   getHomeTweets,
@@ -9,11 +9,10 @@ import {
 
 const navRouter = express.Router();
 
-navRouter.use(getAccessToken);
+navRouter.get("/explore", asyncHandler(getExploreTweets));
+navRouter.use(getRefreshToken);
 
 navRouter.get("/home", asyncHandler(getHomeTweets));
-
-navRouter.get("/explore", asyncHandler(getExploreTweets));
 
 navRouter.get("/bookmarks", asyncHandler(getSavedTweets));
 

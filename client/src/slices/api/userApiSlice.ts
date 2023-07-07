@@ -1,4 +1,4 @@
-import { UserProps } from "../../types/user";
+import { FollowProps, TweetProps, UserProps } from "../../types/user";
 import { apiSlice } from "./apiSlice";
 
 export const userApiSlice = apiSlice.injectEndpoints({
@@ -29,9 +29,45 @@ export const userApiSlice = apiSlice.injectEndpoints({
         method: "PUT",
         body: body,
       }),
+      invalidatesTags: ["User"],
     }),
     getProfileData: builder.query<UserProps, { name: string }>({
       query: (body) => `user/${body.name}`,
+      providesTags: ["User"],
+    }),
+
+    getHomeTweets: builder.query<TweetProps[], void>({
+      query: () => "home",
+      providesTags: ["Home"],
+    }),
+    getExploreTweets: builder.query<TweetProps[], void>({
+      query: () => "explore",
+      providesTags: ["Explore"],
+    }),
+    getBookmarks: builder.query<TweetProps[], void>({
+      query: () => "bookmarks",
+      providesTags: ["Bookmarks"],
+    }),
+    followUser: builder.mutation<void, { id: string }>({
+      query: (body) => ({
+        url: `user/${body.id}/follow`,
+        method: "POST",
+      }),
+      invalidatesTags: ["User", "LoggedUser"],
+    }),
+    unFollowUser: builder.mutation<void, { id: string }>({
+      query: (body) => ({
+        url: `user/${body.id}/unfollow`,
+        method: "POST",
+      }),
+      invalidatesTags: ["User", "LoggedUser"],
+    }),
+    getLoggeduser: builder.query<
+      { username: string; following: FollowProps[] },
+      { id: string }
+    >({
+      query: (body) => `user/${body.id}`,
+      providesTags: ["LoggedUser"],
     }),
   }),
 });
@@ -41,4 +77,10 @@ export const {
   useCheckTokenMutation,
   useUpdateUserMutation,
   useGetProfileDataQuery,
+  useGetBookmarksQuery,
+  useGetExploreTweetsQuery,
+  useGetHomeTweetsQuery,
+  useFollowUserMutation,
+  useUnFollowUserMutation,
+  useGetLoggeduserQuery,
 } = userApiSlice;

@@ -32,7 +32,6 @@ const CreateUser: RequestHandler = async (req, res) => {
 
 const getUser: RequestHandler = async (req, res) => {
   const user = await User.findOne({ username: req.params.id })
-    .populate(["followers", "following"])
     .populate({
       path: "tweets.tweet",
       populate: {
@@ -51,7 +50,16 @@ const getUser: RequestHandler = async (req, res) => {
           select: "username profileimage",
         },
       },
+    })
+    .populate({
+      path: "followers",
+      select: "username profileimage _id",
+    })
+    .populate({
+      path: "following",
+      select: "username profileimage _id",
     });
+
   if (user === null) return res.status(404).json({ message: "User not found" });
   res.status(200).json(user);
 };
@@ -76,6 +84,7 @@ const getAllUsers: RequestHandler = async (req, res) => {
 const deleteUser = async (req, res) => {
   await User.findByIdAndDelete(req.user.id);
   res.status(200).json({ message: "User deleted" });
+  //remove cookie
 };
 
 /**

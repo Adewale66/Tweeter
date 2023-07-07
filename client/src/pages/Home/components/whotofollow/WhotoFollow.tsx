@@ -1,5 +1,5 @@
 import { Divider, Stack, Text, createStyles } from "@mantine/core";
-import UserCard from "./users";
+import UserCard from "./UserCard";
 
 const useStyles = createStyles((theme) => ({
   container: {

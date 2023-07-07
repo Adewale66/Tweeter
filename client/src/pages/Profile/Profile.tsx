@@ -10,12 +10,22 @@ import {
 import { IconUserPlus } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import Modal from "./components/Modal";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Body from "./components/Body";
-import { Link } from "react-router-dom";
 import Settings from "./components/Settings";
 import { useParams } from "react-router-dom";
-import { useGetProfileDataQuery } from "../../slices/api/userApiSlice";
+import {
+  useCheckTokenMutation,
+  useFollowUserMutation,
+  useGetLoggeduserQuery,
+  useGetProfileDataQuery,
+  useUnFollowUserMutation,
+} from "../../slices/api/userApiSlice";
+import { AppDispatch, RootState } from "../../store";
+import { useDispatch, useSelector } from "react-redux";
+import { FollowProps } from "../../types/user";
+import toast from "react-hot-toast";
+import { changeToken, removeCredentials } from "../../slices/authSlice";
 
 const useStyles = createStyles((theme) => ({
   image: {
@@ -106,8 +116,27 @@ const Profile = () => {
   const { data, isLoading } = useGetProfileDataQuery({
     name: profile as string,
   });
+  const [follow] = useFollowUserMutation();
+  const [unFollow] = useUnFollowUserMutation();
+
+  const followBtn = useRef<HTMLButtonElement>(null);
+  const unfollowBtn = useRef<HTMLButtonElement>(null);
+
+  const dispatch: AppDispatch = useDispatch();
+  const [token] = useCheckTokenMutation();
+
+  const user = useSelector((state: RootState) => state.auth.userInfo);
+  const { data: loggeduser } = useGetLoggeduserQuery({
+    id: user?.id as string,
+  });
+
+  const presentFollwing = loggeduser?.following.find(
+    (f) => f.username === data?.username
+  );
 
   if (isLoading) return <h1>Loading....</h1>;
+
+  if (!data) return <h1>No User found</h1>;
 
   function changeFollowers() {
     setType("followers");
@@ -117,25 +146,103 @@ const Profile = () => {
     setType("following");
     open();
   }
+
+  const followers = data.followers.map((p) => {
+    return {
+      username: p.username,
+      profileimage: p.profileimage,
+      followed: loggeduser?.following.find((f) => f.username === p.username)
+        ? true
+        : false,
+      id: p.id,
+    };
+  });
+
+  const following = data.following.map((p) => {
+    return {
+      username: p.username,
+      profileimage: p.profileimage,
+      followed: loggeduser?.following.find((f) => f.username === p.username)
+        ? true
+        : false,
+      id: p.id,
+    };
+  });
+
+  async function handleFollow() {
+    try {
+      await follow({ id: data?.id as string }).unwrap();
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.data.error === "token expired") {
+        try {
+          if (user) {
+            const res = await token({
+              username: user?.username,
+              id: user?.id,
+            }).unwrap();
+            dispatch(changeToken(res));
+            followBtn.current?.click();
+          }
+        } catch (error) {
+          toast.error("Session expired, please log in");
+          dispatch(removeCredentials());
+        }
+      } else if (error.status === "PARSING_ERROR") {
+        toast.error(error.data);
+      } else toast.error("Something went wrong");
+    }
+  }
+
+  async function handleUnfollow() {
+    try {
+      await unFollow({ id: data?.id as string }).unwrap();
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.data.error === "token expired") {
+        try {
+          if (user) {
+            const res = await token({
+              username: user?.username,
+              id: user?.id,
+            }).unwrap();
+            dispatch(changeToken(res));
+            unfollowBtn.current?.click();
+          }
+        } catch (error) {
+          toast.error("Session expired, please log in");
+          dispatch(removeCredentials());
+        }
+      } else if (error.status === "PARSING_ERROR") {
+        toast.error(error.data);
+      } else toast.error("Something went wrong");
+    }
+  }
   return (
     <>
-      <Modal opened={opened} onClose={close} type={type} />
-      <Image
-        src="http://localhost:8000/uploads/tree-736885_1280.jpg"
-        height={280}
+      <Modal
+        opened={opened}
+        onClose={close}
+        type={type}
+        following={following}
+        followers={followers}
+        username={data?.username}
       />
+      <Image withPlaceholder src={data?.bannerImage} height={280} />
       <div className={classes.container}>
         <Avatar
-          src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&w=1000&q=80"
+          src={data?.profileimage}
           alt="wale"
           radius="md"
           mr={24}
           className={classes.image}
         />
-        <Stack maw={420} className={classes.stack}>
+        <Stack maw={420} className={classes.stack} mih={100}>
           <Flex wrap="wrap" align="center" className={classes.flexContainer}>
             <Text fz={24} fw={600} className={classes.username}>
-              Adewale Kujore
+              {data?.username}
             </Text>
             <Flex gap={26}>
               <Text
@@ -144,7 +251,7 @@ const Profile = () => {
                 className={classes.modal}
                 onClick={changeFollowing}
               >
-                2000 Following
+                {data?.following.length} Following
               </Text>
               <Text
                 fz={12}
@@ -152,29 +259,40 @@ const Profile = () => {
                 className={classes.modal}
                 onClick={changeFollowers}
               >
-                3000 Followers
+                {data?.followers.length} Followers
               </Text>
             </Flex>
           </Flex>
           <Text fw={500} fz={15} className={classes.text}>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit.sssssssss
+            {data?.description}
           </Text>
         </Stack>
-        {false && (
+        {!presentFollwing && loggeduser?.username !== data?.username && (
           <Button
-            h={32}
+            h={40}
             color="#2F80ED"
             leftIcon={<IconUserPlus size={18} />}
             size="md"
             className={classes.btn}
+            onClick={handleFollow}
+            ref={followBtn}
           >
             Follow
           </Button>
         )}
-        {/* <Button h={32} variant="default" size="md" ml="auto">
-          Following
-        </Button> */}
-        {"wale" && (
+        {presentFollwing && (
+          <Button
+            h={40}
+            variant="default"
+            size="md"
+            ml="auto"
+            onClick={handleUnfollow}
+            ref={unfollowBtn}
+          >
+            Following
+          </Button>
+        )}
+        {loggeduser?.username === data?.username && (
           <Button
             variant="default"
             size="md"
@@ -188,7 +306,7 @@ const Profile = () => {
         )}
         <Settings opened={ModalOpened} close={closeModal} />
       </div>
-      {data?.tweets && data.tweets.length > 0 && <Body tweets={data.tweets} />}
+      {data?.tweets && <Body tweets={data.tweets} />}
     </>
   );
 };

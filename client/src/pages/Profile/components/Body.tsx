@@ -37,12 +37,12 @@ const Body = ({ tweets }: { tweets: TweetProps[] }) => {
     const time2 = new Date(b.tweet.createdAt);
     return time2.getTime() - time1.getTime();
   });
-  console.log(temp);
+  // console.log(temp);
 
   const { classes } = useStyles();
   return (
     <Box className={classes.container}>
-      <Flex justify="space-between" wrap="wrap" gap={12}>
+      <Flex justify="space-between" wrap="wrap">
         <Stack w={250} h="fit-content" p={12} className={classes.stack}>
           <Text fz={14} fw={600} className={classes.text}>
             Tweets

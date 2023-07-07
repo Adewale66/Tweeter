@@ -147,8 +147,8 @@ export function HeaderMegaMenu() {
             <Link to={"/"} className={classes.link}>
               Home
             </Link>
-            <Link to={"/explore"} className={classes.link}>
-              Explore
+            <Link to={"/admin"} className={classes.link}>
+              Profile
             </Link>
             <Link to={"/bookmarks"} className={classes.link}>
               Bookmarks
@@ -171,7 +171,6 @@ export function HeaderMegaMenu() {
           />
         </Group>
       </Header>
-
       <Drawer
         opened={drawerOpened}
         onClose={closeDrawer}
@@ -205,10 +204,6 @@ export function HeaderMegaMenu() {
               Profile
             </Link>
           )}
-
-          <Link to={"/explore"} className={classes.link} onClick={closeDrawer}>
-            Explore
-          </Link>
           <Link
             to={"/bookmarks"}
             className={classes.link}

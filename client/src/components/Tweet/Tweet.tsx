@@ -15,6 +15,9 @@ import Comments from "./Comments";
 import { Link } from "react-router-dom";
 import { IconRefresh } from "@tabler/icons-react";
 import { TweetProps } from "../../types/user";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { useState } from "react";
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -55,13 +58,21 @@ const Tweet = ({ tweet }: { tweet: TweetProps }) => {
   const formattedDate = formatter.format(date);
 
   const { classes, theme } = useStyles();
+  const user = useSelector((state: RootState) => state.auth.userInfo);
+  const [displayReply, setDisplayReply] = useState(false);
   return (
     <Container className={classes.container} size="xs">
       {tweet.retweeted && (
         <Flex gap={5} align="center" className={classes.retweeted}>
           <IconRefresh width={20} height={20} strokeWidth={1.5} />
           <Text fw={500} fz={14}>
-            Adewale kujore retweeted
+            {tweet.retweetedBy &&
+              tweet.retweetedBy === user?.username &&
+              "You Retweeted"}
+            {tweet.retweetedBy &&
+              tweet.retweetedBy !== user?.username &&
+              `${tweet.retweetedBy} Retweeted`}
+            {!tweet.retweetedBy && "You Retweeted"}
           </Text>
         </Flex>
       )}
@@ -104,12 +115,18 @@ const Tweet = ({ tweet }: { tweet: TweetProps }) => {
           </Text>
         </Flex>
         <Divider color={theme.colorScheme === "dark" ? "gray.7" : "gray.3"} />
-        <Interact />
+        <Interact
+          id={tweet.tweet._id}
+          saved={tweet.saved}
+          retweeted={tweet.retweeted}
+          liked={tweet.liked}
+          setDisplayReply={setDisplayReply}
+        />
         <Divider color={theme.colorScheme === "dark" ? "gray.7" : "gray.3"} />
-        <Reply />
+        <Reply showCommentBar={displayReply} id={tweet.tweet._id} />
         {tweet.tweet.comments.length > 0 &&
           tweet.tweet.comments.map((c) => (
-            <Comments key={c.createdAt} id={tweet.tweet._id} comment={c} />
+            <Comments key={c.createdAt} comment={c} />
           ))}
       </div>
     </Container>

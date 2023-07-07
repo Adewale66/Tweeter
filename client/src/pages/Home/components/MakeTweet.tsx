@@ -106,7 +106,7 @@ const MakeTweet = () => {
     }
     try {
       await makeTweet(formData).unwrap();
-      toast.success("Tweeted Successfully");
+      toast.success("Success");
       setTweet("");
       setSelectedFile(null);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -157,10 +157,10 @@ const MakeTweet = () => {
         <Divider color={theme.colorScheme === "dark" ? "gray.7" : "gray.3"} />
         <Flex gap={8}>
           <Avatar
-            src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&w=Z1000&q=80"
             alt="wale"
             radius="md"
             className={classes.hiddenMobile}
+            src={user?.image}
           />
           <Stack className={classes.textArea} spacing="xs">
             <Textarea

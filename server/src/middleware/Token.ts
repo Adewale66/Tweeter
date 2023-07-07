@@ -14,6 +14,17 @@ const getAccessToken = (req, res, next) => {
   });
 };
 
+export const getRefreshToken = (req, res, next) => {
+  const token = req.cookies.refresh_token;
+
+  if (!token) return res.status(401).json({ message: "Unauthorized" });
+  jwt.verify(token, process.env.REFRESH_TOKEN_SECRET as string, (err, user) => {
+    if (err) next(err);
+    req.user = user;
+    next();
+  });
+};
+
 export const generateRefreshToken = (payload) => {
   const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: "10 days",

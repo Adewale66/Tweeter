@@ -1,14 +1,27 @@
-import { Divider, Modal, Stack, Text } from "@mantine/core";
-import UserCard from "../../Home/components/whotofollow/users";
+import { Modal, Stack, Text } from "@mantine/core";
+import UserCard from "../../Home/components/whotofollow/UserCard";
+
+interface Props {
+  username: string;
+  profileimage: string;
+  followed: boolean;
+  id: string;
+}
 
 const ModalFollow = ({
   opened,
   onClose,
   type,
+  followers,
+  following,
+  username,
 }: {
   opened: boolean;
   onClose: () => void;
   type: string;
+  following: Props[] | undefined;
+  followers: Props[] | undefined;
+  username: string;
 }) => {
   return (
     <Modal
@@ -18,14 +31,29 @@ const ModalFollow = ({
       centered
       title={
         <Text fz={12} fw={600}>
-          person {type === "following" ? "is" : ""} {type}
+          {username} {type === "following" ? "is" : ""} {type}
         </Text>
       }
     >
       <Stack>
-        <UserCard />
-        <Divider />
-        <UserCard />
+        {type === "following" &&
+          following?.map((f) => (
+            <UserCard
+              id={f.id}
+              username={f.username}
+              profileimage={f.profileimage}
+              followed={f.followed}
+            />
+          ))}
+        {type === "followers" &&
+          followers?.map((f) => (
+            <UserCard
+              id={f.id}
+              username={f.username}
+              profileimage={f.profileimage}
+              followed={f.followed}
+            />
+          ))}
       </Stack>
     </Modal>
   );

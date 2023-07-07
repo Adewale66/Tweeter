@@ -49,10 +49,6 @@ tweetRouter.post("/:postId/bookmark", asyncHandler(bookmarkTweet));
 
 tweetRouter.post("/:postId/removeBookmark", asyncHandler(removeBookmark));
 
-tweetRouter.post(
-  "/:id/comment",
-  updateTweetApiLimiter,
-  asyncHandler(makeComment)
-);
+tweetRouter.post("/:id/comment", asyncHandler(makeComment));
 
 export default tweetRouter;

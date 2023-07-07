@@ -47,6 +47,7 @@ const logUser: RequestHandler = async (req, res) => {
       name: user.name,
       username: user.username,
       access_token: access_token,
+      image: user.profileimage,
     });
 };
 

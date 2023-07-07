@@ -7,7 +7,12 @@ import {
   Group,
   Divider,
 } from "@mantine/core";
-import { IconChevronDown, IconUser, IconLogout } from "@tabler/icons-react";
+import {
+  IconChevronDown,
+  IconUser,
+  IconLogout,
+  IconSettings,
+} from "@tabler/icons-react";
 import { useLogoutMutation } from "../slices/api/logApiSlice";
 import { changeToken, removeCredentials } from "../slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -50,7 +55,7 @@ const User = ({ username }: { username: string }) => {
   return (
     <Popover position="bottom-end" radius="md" width={200}>
       <Flex gap="xs" align="center" justify="center">
-        <Avatar radius="md" size="md" src={null} />
+        <Avatar radius="md" size="md" src={user?.image} />
         <Text>{username}</Text>
         <Popover.Target>
           <Button variant="subtle" color="gray" size="xs">
@@ -61,17 +66,10 @@ const User = ({ username }: { username: string }) => {
       <Popover.Dropdown>
         <Flex direction="column" gap="md">
           <Group position="left">
-            <IconUser />
-            <Text
-              style={{ cursor: "pointer" }}
-              component={Link}
-              to={`/${username}`}
-            >
-              My Profile
-            </Text>
+            <IconSettings />
+            <Text style={{ cursor: "pointer" }}>Settings</Text>
           </Group>
 
-          <Group position="left"></Group>
           <Divider />
           <Group position="left">
             <IconLogout color="red" />
