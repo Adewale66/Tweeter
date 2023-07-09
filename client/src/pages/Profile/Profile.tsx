@@ -3,6 +3,7 @@ import {
   Button,
   Flex,
   Image,
+  Loader,
   Stack,
   Text,
   createStyles,
@@ -10,7 +11,7 @@ import {
 import { IconUserPlus } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import Modal from "./components/Modal";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Body from "./components/Body";
 import Settings from "./components/Settings";
 import { useParams } from "react-router-dom";
@@ -23,7 +24,6 @@ import {
 } from "../../slices/api/userApiSlice";
 import { AppDispatch, RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
-import { FollowProps } from "../../types/user";
 import toast from "react-hot-toast";
 import { changeToken, removeCredentials } from "../../slices/authSlice";
 
@@ -113,7 +113,7 @@ const Profile = () => {
     useDisclosure(false);
   const [type, setType] = useState<string>("");
   const { profile } = useParams();
-  const { data, isLoading } = useGetProfileDataQuery({
+  const { data, isLoading, isFetching } = useGetProfileDataQuery({
     name: profile as string,
   });
   const [follow] = useFollowUserMutation();
@@ -126,15 +126,31 @@ const Profile = () => {
   const [token] = useCheckTokenMutation();
 
   const user = useSelector((state: RootState) => state.auth.userInfo);
-  const { data: loggeduser } = useGetLoggeduserQuery({
-    id: user?.id as string,
+  const {
+    data: loggeduser,
+    isFetching: isFetchingLoggeduser,
+    isLoading: isLoadingLoggeduser,
+  } = useGetLoggeduserQuery({
+    id: user?.username as string,
   });
 
   const presentFollwing = loggeduser?.following.find(
     (f) => f.username === data?.username
   );
 
-  if (isLoading) return <h1>Loading....</h1>;
+  if (isLoading || isLoadingLoggeduser)
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+        }}
+      >
+        <Loader variant="bars" />
+      </div>
+    );
 
   if (!data) return <h1>No User found</h1>;
 
@@ -155,6 +171,7 @@ const Profile = () => {
         ? true
         : false,
       id: p.id,
+      name: p.name,
     };
   });
 
@@ -166,6 +183,16 @@ const Profile = () => {
         ? true
         : false,
       id: p.id,
+      name: p.name,
+    };
+  });
+
+  const ids = loggeduser?.tweets.map((t) => {
+    return {
+      id: t.tweet._id,
+      retweeted: t.retweeted,
+      liked: t.liked,
+      saved: t.saved,
     };
   });
 
@@ -228,7 +255,7 @@ const Profile = () => {
         type={type}
         following={following}
         followers={followers}
-        username={data?.username}
+        name={data?.name}
       />
       <Image withPlaceholder src={data?.bannerImage} height={280} />
       <div className={classes.container}>
@@ -242,7 +269,7 @@ const Profile = () => {
         <Stack maw={420} className={classes.stack} mih={100}>
           <Flex wrap="wrap" align="center" className={classes.flexContainer}>
             <Text fz={24} fw={600} className={classes.username}>
-              {data?.username}
+              {data?.name}
             </Text>
             <Flex gap={26}>
               <Text
@@ -267,46 +294,61 @@ const Profile = () => {
             {data?.description}
           </Text>
         </Stack>
-        {!presentFollwing && loggeduser?.username !== data?.username && (
+        {isFetching || isFetchingLoggeduser ? (
           <Button
             h={40}
-            color="#2F80ED"
-            leftIcon={<IconUserPlus size={18} />}
             size="md"
             className={classes.btn}
-            onClick={handleFollow}
-            ref={followBtn}
-          >
-            Follow
-          </Button>
-        )}
-        {presentFollwing && (
-          <Button
-            h={40}
+            style={{ backgroundColor: "transparent" }}
+            disabled
             variant="default"
-            size="md"
-            ml="auto"
-            onClick={handleUnfollow}
-            ref={unfollowBtn}
           >
-            Following
+            <Loader />
           </Button>
-        )}
-        {loggeduser?.username === data?.username && (
-          <Button
-            variant="default"
-            size="md"
-            radius="md"
-            className={classes.btn}
-            ml="auto"
-            onClick={openModal}
-          >
-            Edit Profile
-          </Button>
+        ) : (
+          <>
+            {!presentFollwing && loggeduser?.username !== data?.username && (
+              <Button
+                h={40}
+                color="#2F80ED"
+                leftIcon={<IconUserPlus size={18} />}
+                size="md"
+                className={classes.btn}
+                onClick={handleFollow}
+                ref={followBtn}
+              >
+                Follow
+              </Button>
+            )}
+            {presentFollwing && (
+              <Button
+                h={40}
+                variant="default"
+                size="md"
+                ml="auto"
+                onClick={handleUnfollow}
+                ref={unfollowBtn}
+              >
+                Following
+              </Button>
+            )}
+            {loggeduser?.username === data?.username && (
+              <Button
+                variant="default"
+                size="md"
+                radius="md"
+                className={classes.btn}
+                ml="auto"
+                onClick={openModal}
+              >
+                Edit Profile
+              </Button>
+            )}
+          </>
         )}
         <Settings opened={ModalOpened} close={closeModal} />
       </div>
-      {data?.tweets && <Body tweets={data.tweets} />}
+      {data?.tweets && <Body tweets={data.tweets} ids={ids ? ids : []} />}
     </>
   );
 };

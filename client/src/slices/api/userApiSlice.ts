@@ -1,4 +1,9 @@
-import { FollowProps, TweetProps, UserProps } from "../../types/user";
+import {
+  FollowProps,
+  TweetProps,
+  UserProps,
+  UserToken,
+} from "../../types/user";
 import { apiSlice } from "./apiSlice";
 
 export const userApiSlice = apiSlice.injectEndpoints({
@@ -23,7 +28,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: body,
       }),
     }),
-    updateUser: builder.mutation<void, FormData>({
+    updateUser: builder.mutation<UserToken, FormData>({
       query: (body) => ({
         url: "user",
         method: "PUT",
@@ -63,7 +68,15 @@ export const userApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ["User", "LoggedUser"],
     }),
     getLoggeduser: builder.query<
-      { username: string; following: FollowProps[] },
+      {
+        username: string;
+        name: string;
+        following: FollowProps[];
+        tweets: TweetProps[];
+        profileimage: string;
+        bannerImage: string;
+        description: string;
+      },
       { id: string }
     >({
       query: (body) => `user/${body.id}`,

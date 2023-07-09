@@ -19,42 +19,42 @@ export const tweetApi = apiSlice.injectEndpoints({
         url: "tweet/" + data.id + "/like",
         method: "POST",
       }),
-      invalidatesTags: ["User", "Home", "Bookmarks"],
+      invalidatesTags: ["User", "Home", "Bookmarks", "LoggedUser"],
     }),
     removeLike: builder.mutation<void, { id: string }>({
       query: (data) => ({
         url: "tweet/" + data.id + "/removeLike",
         method: "POST",
       }),
-      invalidatesTags: ["User", "Home", "Bookmarks"],
+      invalidatesTags: ["User", "Home", "Bookmarks", "LoggedUser"],
     }),
     retweetTweet: builder.mutation<void, { id: string }>({
       query: (data) => ({
         url: "tweet/" + data.id + "/retweet",
         method: "POST",
       }),
-      invalidatesTags: ["User", "Home", "Bookmarks"],
+      invalidatesTags: ["User", "Home", "Bookmarks", "LoggedUser"],
     }),
     removeRetweet: builder.mutation<void, { id: string }>({
       query: (data) => ({
         url: "tweet/" + data.id + "/removeRetweet",
         method: "POST",
       }),
-      invalidatesTags: ["User", "Home", "Bookmarks"],
+      invalidatesTags: ["User", "Home", "Bookmarks", "LoggedUser"],
     }),
     saveTweet: builder.mutation<void, { id: string }>({
       query: (data) => ({
         url: "tweet/" + data.id + "/bookmark",
         method: "POST",
       }),
-      invalidatesTags: ["User", "Home", "Bookmarks"],
+      invalidatesTags: ["User", "Home", "Bookmarks", "LoggedUser"],
     }),
     removeBookmark: builder.mutation<void, { id: string }>({
       query: (data) => ({
         url: "tweet/" + data.id + "/removeBookmark",
         method: "POST",
       }),
-      invalidatesTags: ["User", "Home", "Bookmarks"],
+      invalidatesTags: ["User", "Home", "Bookmarks", "LoggedUser"],
     }),
     makeComment: builder.mutation<void, { id: string; comment: string }>({
       query: (data) => ({
@@ -62,7 +62,7 @@ export const tweetApi = apiSlice.injectEndpoints({
         method: "POST",
         body: { comment: data.comment },
       }),
-      invalidatesTags: ["User", "Home", "Bookmarks"],
+      invalidatesTags: ["User", "Home", "Bookmarks", "LoggedUser"],
     }),
   }),
 });

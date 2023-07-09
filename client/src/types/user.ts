@@ -18,12 +18,14 @@ export interface TweetProps {
       madeBy: {
         username: string;
         profileimage: string;
+        name: string;
       };
       createdAt: string;
     }[];
     madeBy: {
       username: string;
       profileimage: string;
+      name: string;
     };
     preference: string;
     createdAt: string;
@@ -42,6 +44,7 @@ export interface UserProps {
   followers: FollowProps[];
   following: FollowProps[];
   username: string;
+  name: string;
   profileimage: string;
   tweets: TweetProps[];
   id: string;
@@ -51,4 +54,5 @@ export interface FollowProps {
   username: string;
   profileimage: string;
   id: string;
+  name: string;
 }

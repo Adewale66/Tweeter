@@ -21,9 +21,11 @@ const validateProfileChange = async (req, res, next) => {
         allowMimeTypes: ["image/jpeg", "image/png"],
       });
       console.log("validated", validateResult);
+      next();
       if (!validateResult.ok)
         return res.status(400).json({ message: "Invalid image type" });
     }
+    next();
   } else next();
 };
 

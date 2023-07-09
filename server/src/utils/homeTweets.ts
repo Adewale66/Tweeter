@@ -12,6 +12,7 @@ export function sortTweets(users: UserProps[], req: { user: { username } }) {
           madeBy: {
             username: users[i].tweets[j].tweet.madeBy.username,
             profileimage: users[i].tweets[j].tweet.madeBy.profileimage,
+            name: users[i].tweets[j].tweet.madeBy.name,
           },
           image: users[i].tweets[j].tweet.image,
           comments: [],
@@ -39,6 +40,7 @@ export function sortTweets(users: UserProps[], req: { user: { username } }) {
             username: users[i].tweets[j].tweet.comments[c].madeBy.username,
             profileimage:
               users[i].tweets[j].tweet.comments[c].madeBy.profileimage,
+            name: users[i].tweets[j].tweet.comments[c].madeBy.name,
           },
           comment: users[i].tweets[j].tweet.comments[c].comment,
           createdAt: users[i].tweets[j].tweet.comments[c].createdAt,

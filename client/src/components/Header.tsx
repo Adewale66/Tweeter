@@ -15,7 +15,7 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import logo from "../assets/tweeter.svg";
 import lightLogo from "../assets/tweeter-light.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import User from "./user";
 import { ThemeToggle } from "./ChangeTheme";
 import { useDispatch, useSelector } from "react-redux";
@@ -98,6 +98,7 @@ const useStyles = createStyles((theme) => ({
 
 export function HeaderMegaMenu() {
   const user = useSelector((state: RootState) => state.auth.userInfo);
+  const navigate = useNavigate();
 
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
@@ -113,6 +114,7 @@ export function HeaderMegaMenu() {
       await logout().unwrap();
       dispatch(removeCredentials());
       toast.success("Successfully logged out");
+      navigate("/login");
       closeDrawer();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -129,6 +131,7 @@ export function HeaderMegaMenu() {
         } catch (error) {
           toast.error("Session expired, please log in");
           dispatch(removeCredentials());
+          navigate("/login", { replace: true });
         }
       } else toast.error("Something went wrong");
     }
@@ -147,7 +150,7 @@ export function HeaderMegaMenu() {
             <Link to={"/"} className={classes.link}>
               Home
             </Link>
-            <Link to={"/admin"} className={classes.link}>
+            <Link to={`/${user?.username}`} className={classes.link}>
               Profile
             </Link>
             <Link to={"/bookmarks"} className={classes.link}>
@@ -156,7 +159,7 @@ export function HeaderMegaMenu() {
           </Group>
 
           <Group className={classes.hiddenMobile}>
-            {user && <User username={user.username} />}
+            {user && <User />}
             {!user && (
               <Button component={Link} to={"/login"}>
                 Login
@@ -197,7 +200,7 @@ export function HeaderMegaMenu() {
           </Link>
           {user && (
             <Link
-              to={"/profile"}
+              to={`/${user.username}`}
               className={classes.link}
               onClick={closeDrawer}
             >

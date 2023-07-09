@@ -52,13 +52,13 @@ const getTweet = async (req, res) => {
       populate: {
         path: "madeBy",
         model: "User",
-        select: "username profileimage",
+        select: "username profileimage name",
       },
     })
     .populate({
       path: "madeBy",
       model: "User",
-      select: "username profileimage",
+      select: "username profileimage name",
     });
   if (tweet === null)
     return res.status(404).json({ message: "Tweet not found" });

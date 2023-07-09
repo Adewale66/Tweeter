@@ -6,6 +6,7 @@ interface Props {
   profileimage: string;
   followed: boolean;
   id: string;
+  name: string;
 }
 
 const ModalFollow = ({
@@ -14,14 +15,15 @@ const ModalFollow = ({
   type,
   followers,
   following,
-  username,
+
+  name,
 }: {
   opened: boolean;
   onClose: () => void;
   type: string;
   following: Props[] | undefined;
   followers: Props[] | undefined;
-  username: string;
+  name: string;
 }) => {
   return (
     <Modal
@@ -31,7 +33,7 @@ const ModalFollow = ({
       centered
       title={
         <Text fz={12} fw={600}>
-          {username} {type === "following" ? "is" : ""} {type}
+          {name} {type === "following" ? "is" : ""} {type}
         </Text>
       }
     >
@@ -43,6 +45,7 @@ const ModalFollow = ({
               username={f.username}
               profileimage={f.profileimage}
               followed={f.followed}
+              name={f.name}
             />
           ))}
         {type === "followers" &&
@@ -52,6 +55,7 @@ const ModalFollow = ({
               username={f.username}
               profileimage={f.profileimage}
               followed={f.followed}
+              name={f.name}
             />
           ))}
       </Stack>

@@ -15,12 +15,14 @@ export interface TweetProps {
       comment: string;
       madeBy: {
         username: string;
+        name: string;
         profileimage: string;
       };
       createdAt: string;
     }[];
     madeBy: {
       username: string;
+      name: string;
       profileimage: string;
     };
     preference: string;

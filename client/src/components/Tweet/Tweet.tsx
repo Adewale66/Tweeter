@@ -12,7 +12,7 @@ import {
 import Interact from "./Interact";
 import Reply from "./Reply";
 import Comments from "./Comments";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { IconRefresh } from "@tabler/icons-react";
 import { TweetProps } from "../../types/user";
 import { useSelector } from "react-redux";
@@ -44,7 +44,13 @@ const useStyles = createStyles((theme) => ({
     borderRadius: "0.5rem",
   },
 }));
-const Tweet = ({ tweet }: { tweet: TweetProps }) => {
+const Tweet = ({
+  tweet,
+  ids,
+}: {
+  tweet: TweetProps;
+  ids: { id: string; retweeted: boolean; liked: boolean; saved: boolean }[];
+}) => {
   const date = new Date(tweet.tweet.createdAt);
   const options: Intl.DateTimeFormatOptions = {
     month: "long",
@@ -60,22 +66,38 @@ const Tweet = ({ tweet }: { tweet: TweetProps }) => {
   const { classes, theme } = useStyles();
   const user = useSelector((state: RootState) => state.auth.userInfo);
   const [displayReply, setDisplayReply] = useState(false);
+  const { profile } = useParams();
+  const tweetIds = ids?.map((t) => t.id);
+  const idx = tweetIds?.indexOf(tweet.tweet._id);
+
   return (
     <Container className={classes.container} size="xs">
-      {tweet.retweeted && (
+      {tweet.retweeted && profile && profile === user?.username && (
         <Flex gap={5} align="center" className={classes.retweeted}>
           <IconRefresh width={20} height={20} strokeWidth={1.5} />
           <Text fw={500} fz={14}>
-            {tweet.retweetedBy &&
-              tweet.retweetedBy === user?.username &&
-              "You Retweeted"}
-            {tweet.retweetedBy &&
-              tweet.retweetedBy !== user?.username &&
-              `${tweet.retweetedBy} Retweeted`}
-            {!tweet.retweetedBy && "You Retweeted"}
+            You Retweeted
           </Text>
         </Flex>
       )}
+      {tweet.retweeted && profile && profile !== user?.username && (
+        <Flex gap={5} align="center" className={classes.retweeted}>
+          <IconRefresh width={20} height={20} strokeWidth={1.5} />
+          <Text fw={500} fz={14}>
+            {profile} Retweeted
+          </Text>
+        </Flex>
+      )}
+      {tweet.retweeted && !profile && tweet.retweetedBy && (
+        <Flex gap={5} align="center" className={classes.retweeted}>
+          <IconRefresh width={20} height={20} strokeWidth={1.5} />
+          <Text fw={500} fz={14}>
+            {tweet.retweetedBy === user?.username ? "You" : tweet.retweetedBy}{" "}
+            Retweeted
+          </Text>
+        </Flex>
+      )}
+
       <div className={classes.body}>
         <Group>
           <Avatar
@@ -84,8 +106,12 @@ const Tweet = ({ tweet }: { tweet: TweetProps }) => {
             radius="md"
           />
           <div>
-            <Text fz="sm" component={Link} to="/admin">
-              {tweet.tweet.madeBy.username}
+            <Text
+              fz="sm"
+              component={Link}
+              to={`/${tweet.tweet.madeBy.username}`}
+            >
+              {tweet.tweet.madeBy.name}
             </Text>
             <Text fz="xs" c="dimmed">
               {formattedDate}
@@ -115,13 +141,57 @@ const Tweet = ({ tweet }: { tweet: TweetProps }) => {
           </Text>
         </Flex>
         <Divider color={theme.colorScheme === "dark" ? "gray.7" : "gray.3"} />
-        <Interact
-          id={tweet.tweet._id}
-          saved={tweet.saved}
-          retweeted={tweet.retweeted}
-          liked={tweet.liked}
-          setDisplayReply={setDisplayReply}
-        />
+        {profile &&
+          profile !== user?.username &&
+          tweetIds?.includes(tweet.tweet._id) && (
+            <Interact
+              id={ids[idx].id}
+              saved={ids[idx].saved}
+              retweeted={ids[idx].retweeted}
+              liked={ids[idx].liked}
+              setDisplayReply={setDisplayReply}
+            />
+          )}
+        {profile &&
+          profile !== user?.username &&
+          !tweetIds?.includes(tweet.tweet._id) && (
+            <Interact
+              id={tweet.tweet._id}
+              saved={false}
+              retweeted={false}
+              liked={false}
+              setDisplayReply={setDisplayReply}
+            />
+          )}
+
+        {profile === user?.username && (
+          <Interact
+            id={tweet.tweet._id}
+            saved={tweet.saved}
+            retweeted={tweet.retweeted}
+            liked={tweet.liked}
+            setDisplayReply={setDisplayReply}
+          />
+        )}
+        {!profile && tweetIds?.includes(tweet.tweet._id) && (
+          <Interact
+            id={tweet.tweet._id}
+            saved={ids[idx].saved}
+            retweeted={ids[idx].retweeted}
+            liked={ids[idx].liked}
+            setDisplayReply={setDisplayReply}
+          />
+        )}
+        {!profile && !tweetIds?.includes(tweet.tweet._id) && (
+          <Interact
+            id={tweet.tweet._id}
+            saved={false}
+            retweeted={false}
+            liked={false}
+            setDisplayReply={setDisplayReply}
+          />
+        )}
+
         <Divider color={theme.colorScheme === "dark" ? "gray.7" : "gray.3"} />
         <Reply showCommentBar={displayReply} id={tweet.tweet._id} />
         {tweet.tweet.comments.length > 0 &&

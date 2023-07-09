@@ -37,7 +37,7 @@ const getUser: RequestHandler = async (req, res) => {
       populate: {
         path: "madeBy",
         model: "User",
-        select: "username profileimage",
+        select: "username profileimage name",
       },
     })
     .populate({
@@ -47,17 +47,17 @@ const getUser: RequestHandler = async (req, res) => {
         populate: {
           path: "madeBy",
           model: "User",
-          select: "username profileimage",
+          select: "username profileimage name",
         },
       },
     })
     .populate({
       path: "followers",
-      select: "username profileimage _id",
+      select: "username profileimage _id name",
     })
     .populate({
       path: "following",
-      select: "username profileimage _id",
+      select: "username profileimage _id name",
     });
 
   if (user === null) return res.status(404).json({ message: "User not found" });
@@ -155,34 +155,39 @@ const unFollowUser = async (req, res) => {
  */
 
 const updateUser = async (req, res) => {
-  const { username, description } = req.body;
-  if (!username)
-    return res.status(400).json({ message: "Username can not be empty" });
-  console.log(req.files);
-
-  console.log(req.files["profile"]);
-  console.log(req.files["banner"]);
+  const { name, description } = req.body;
+  const authHeader = req.headers["authorization"];
+  const access_token = authHeader && authHeader.split(" ")[1];
+  if (!name) return res.status(400).json({ message: "Name can not be empty" });
 
   let profileimage = "";
   let bannerImage = "";
+
   if (Object.keys(req.files).length > 0) {
-    profileimage = `${req.protocol}://${req.get("host")}/uploads/${
-      req.files["profile"][0].filename
-    }`;
-    bannerImage = `${req.protocol}://${req.get("host")}/uploads/${
-      req.files["banner"][0].filename
-    }`;
+    if (req.files["profile"])
+      profileimage = `${req.protocol}://${req.get("host")}/uploads/${
+        req.files["profile"][0].filename
+      }`;
+    if (req.files["banner"])
+      bannerImage = `${req.protocol}://${req.get("host")}/uploads/${
+        req.files["banner"][0].filename
+      }`;
   }
 
-  const user = await User.findByIdAndUpdate(req.user.id, {
-    username,
-    profileimage,
-    bannerImage,
-    description,
-  });
+  const user = await User.findById(req.user.id);
+  user.name = name;
+  user.description = description;
+  user.profileimage = profileimage ? profileimage : user.profileimage;
+  user.bannerImage = bannerImage ? bannerImage : user.bannerImage;
 
   await user.save();
-  res.status(200).json({ message: "User updated" });
+  res.status(200).json({
+    id: user._id,
+    name: user.name,
+    username: user.username,
+    access_token: access_token,
+    image: user.profileimage,
+  });
 };
 
 export {

@@ -33,7 +33,6 @@ userRouter.put(
     { name: "banner", maxCount: 1 },
     { name: "profile", maxCount: 1 },
   ]),
-  asyncHandler(validateProfileChange),
   // updateProfileApiLimiter,
   asyncHandler(updateUser)
 );

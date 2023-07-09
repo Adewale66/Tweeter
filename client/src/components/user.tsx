@@ -6,28 +6,31 @@ import {
   Popover,
   Group,
   Divider,
+  useMantineColorScheme,
 } from "@mantine/core";
 import {
   IconChevronDown,
-  IconUser,
   IconLogout,
-  IconSettings,
+  IconSun,
+  IconMoonStars,
 } from "@tabler/icons-react";
 import { useLogoutMutation } from "../slices/api/logApiSlice";
 import { changeToken, removeCredentials } from "../slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast/headless";
 import { AppDispatch, RootState } from "../store";
-import { Link } from "react-router-dom";
 import { useCheckTokenMutation } from "../slices/api/userApiSlice";
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
-const User = ({ username }: { username: string }) => {
+const User = () => {
   const dispatch: AppDispatch = useDispatch();
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [logout] = useLogoutMutation();
   const [token] = useCheckTokenMutation();
   const user = useSelector((state: RootState) => state.auth.userInfo);
   const btnRef = useRef<HTMLButtonElement>(null);
+  const navigate = useNavigate();
 
   async function logoutUser() {
     try {
@@ -48,6 +51,7 @@ const User = ({ username }: { username: string }) => {
         } catch (error) {
           toast.error("Session expired, please log in");
           dispatch(removeCredentials());
+          navigate("/login", { replace: true });
         }
       } else toast.error("Something went wrong");
     }
@@ -56,7 +60,7 @@ const User = ({ username }: { username: string }) => {
     <Popover position="bottom-end" radius="md" width={200}>
       <Flex gap="xs" align="center" justify="center">
         <Avatar radius="md" size="md" src={user?.image} />
-        <Text>{username}</Text>
+        <Text>{user?.name}</Text>
         <Popover.Target>
           <Button variant="subtle" color="gray" size="xs">
             <IconChevronDown />
@@ -66,8 +70,17 @@ const User = ({ username }: { username: string }) => {
       <Popover.Dropdown>
         <Flex direction="column" gap="md">
           <Group position="left">
-            <IconSettings />
-            <Text style={{ cursor: "pointer" }}>Settings</Text>
+            {colorScheme === "dark" ? (
+              <IconSun size="1.2rem" />
+            ) : (
+              <IconMoonStars size="1.2rem" />
+            )}
+            <Text
+              style={{ cursor: "pointer" }}
+              onClick={() => toggleColorScheme()}
+            >
+              {colorScheme === "dark" ? "Light" : "Dark"} Mode
+            </Text>
           </Group>
 
           <Divider />

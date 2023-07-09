@@ -12,16 +12,21 @@ import {
   CloseButton,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IconCameraPlus } from "@tabler/icons-react";
 import {
   useCheckTokenMutation,
+  useGetLoggeduserQuery,
   useUpdateUserMutation,
 } from "../../../slices/api/userApiSlice";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
-import { changeToken, removeCredentials } from "../../../slices/authSlice";
+import {
+  changeToken,
+  removeCredentials,
+  setCredentials,
+} from "../../../slices/authSlice";
 
 const useStyles = createStyles((theme) => ({
   icon: {
@@ -42,15 +47,18 @@ const Settings = ({
   const profileRef = useRef<HTMLButtonElement>(null);
   const bannerRef = useRef<HTMLButtonElement>(null);
   const { classes } = useStyles();
-  const [valueProfile, setValueProfile] = useState<File | null>(null);
-  const [valueBanner, setValueBanner] = useState<File | null>(null);
-
-  const [description, setDescription] = useState("");
-  const [username, setUsername] = useState("");
   const [updateUser] = useUpdateUserMutation();
   const [token] = useCheckTokenMutation();
   const user = useSelector((state: RootState) => state.auth.userInfo);
   const btnRef = useRef<HTMLButtonElement>(null);
+  const { data: loggeduser } = useGetLoggeduserQuery({
+    id: user?.username as string,
+  });
+  const [valueProfile, setValueProfile] = useState<File | null>(null);
+  const [valueBanner, setValueBanner] = useState<File | null>(null);
+
+  const [description, setDescription] = useState("");
+  const [name, setName] = useState("");
 
   const dispatch: AppDispatch = useDispatch();
 
@@ -65,16 +73,21 @@ const Settings = ({
       profileRef.current.click();
     }
   }
+  useEffect(() => {
+    setDescription(loggeduser?.description as string);
+    setName(loggeduser?.username as string);
+  }, [loggeduser]);
 
   async function saveChanges() {
     const form = new FormData();
-    form.append("username", username);
+    form.append("name", name);
     form.append("description", description);
     form.append("banner", valueBanner as Blob);
     form.append("profile", valueProfile as Blob);
 
     try {
-      await updateUser(form).unwrap();
+      const res = await updateUser(form).unwrap();
+      dispatch(setCredentials(res));
       toast.success("Changes saved successfully");
       close();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -103,7 +116,13 @@ const Settings = ({
   return (
     <Modal
       opened={opened}
-      onClose={close}
+      onClose={() => {
+        setValueProfile(null);
+        setValueBanner(null);
+        setDescription(loggeduser?.description as string);
+        setName(loggeduser?.name as string);
+        close();
+      }}
       title={
         <Text fz={12} fw={600}>
           {" "}
@@ -129,11 +148,13 @@ const Settings = ({
         />
         <Image
           src={
-            (valueBanner && URL.createObjectURL(valueBanner)) ||
-            "https://e0.pxfuel.com/wallpapers/364/85/desktop-wallpaper-gray-high-quality.jpg"
+            valueBanner
+              ? URL.createObjectURL(valueBanner)
+              : loggeduser?.bannerImage
           }
           height={120}
           fit="cover"
+          withPlaceholder
         />
         {valueBanner && (
           <CloseButton
@@ -152,8 +173,9 @@ const Settings = ({
         />
         <Avatar
           src={
-            (valueProfile && URL.createObjectURL(valueProfile)) ||
-            "https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&w=1000&q=80"
+            valueProfile
+              ? URL.createObjectURL(valueProfile)
+              : loggeduser?.profileimage
           }
           alt="wale"
           radius="50%"
@@ -168,12 +190,12 @@ const Settings = ({
           onClick={changeProfile}
           color="white"
         />
-        <Input.Wrapper id="input-demo" label="Username" mt={50}>
+        <Input.Wrapper id="input-demo" label="Name" mt={50}>
           <Input
             id="input-demo"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
         </Input.Wrapper>
         <Textarea

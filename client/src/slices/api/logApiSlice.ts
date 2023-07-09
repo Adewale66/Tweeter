@@ -20,6 +20,14 @@ export const logApiSlice = apiSlice.injectEndpoints({
         url: "logout",
         method: "POST",
       }),
+      invalidatesTags: [
+        "User",
+        "Bookmarks",
+        "Explore",
+        "Home",
+        "LoggedUser",
+        "Tweets",
+      ],
     }),
   }),
 });
