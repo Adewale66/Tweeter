@@ -29,5 +29,5 @@ $ git clone https://github.com/Adewale66/Tweeter.git
 $ npm install
 
 # Run the app
-$ npm start
+$ npm run build && npm start
 ```
