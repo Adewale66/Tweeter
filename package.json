@@ -9,7 +9,7 @@
     "client": "cd client && npm run dev",
     "build": "cd server && rm -rf dist && cd ../client && npm run build && cp -r dist ../server && cd ../server && npm run build",
     "deploy": "npm run build && git add . && git commit -m finishedBuild && git push",
-    "start": "cd server && npm run prod"
+    "start": "npm run build && cd server &&  npm run prod"
   },
   "keywords": [],
   "author": "",
