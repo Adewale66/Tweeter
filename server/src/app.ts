@@ -15,6 +15,7 @@ import createHttpError from "http-errors";
 
 const app = express();
 
+app.use(express.static("dist"));
 app.use(
   cors({
     credentials: true,
@@ -46,7 +47,6 @@ if (NodeEnv === "production") {
   app.use(morgan("dev"));
 }
 app.use(express.static("public"));
-app.use(express.static("dist"));
 app.use("/api", logRouter);
 app.use("/api", tokenRouter);
 app.use("/api/user", userRouter);
