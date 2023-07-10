@@ -1,8 +1,8 @@
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../models/users";
 import { RequestHandler } from "express";
 import { generateAccessToken, generateRefreshToken } from "../middleware/Token";
+import { NodeEnv } from "../utils/config";
 
 /**
  * @desc log a user in
@@ -38,7 +38,7 @@ const logUser: RequestHandler = async (req, res) => {
     .status(200)
     .cookie("refresh_token", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: NodeEnv === "production",
       sameSite: "strict",
       maxAge: 864000000,
     })

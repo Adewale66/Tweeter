@@ -26,6 +26,12 @@ app.use(
     crossOriginResourcePolicy: {
       policy: "cross-origin",
     },
+    contentSecurityPolicy: {
+      useDefaults: true,
+      directives: {
+        "img-src": ["'self'", "https: data:"],
+      },
+    },
   })
 );
 
