@@ -1,16 +1,17 @@
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
 import { HeaderMegaMenu } from "./components/Header";
 import UiProvider from "./context/uiProvider";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { RootState } from "./store";
 
 function App() {
-  const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.auth.userInfo);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) navigate("/login");
+    if (!user) navigate("/login", { replace: true });
   }, [user, navigate]);
   return (
     <UiProvider>

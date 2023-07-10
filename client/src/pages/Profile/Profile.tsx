@@ -6,10 +6,9 @@ import {
   Loader,
   Stack,
   Text,
-  createStyles,
 } from "@mantine/core";
 import { IconUserPlus } from "@tabler/icons-react";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useDocumentTitle } from "@mantine/hooks";
 import Modal from "./components/Modal";
 import { useRef, useState } from "react";
 import Body from "./components/Body";
@@ -26,88 +25,11 @@ import { AppDispatch, RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { changeToken, removeCredentials } from "../../slices/authSlice";
+import { NotFoundUser } from "./components/NouserFound";
+import useStylesProfile from "./profileStyles";
 
-const useStyles = createStyles((theme) => ({
-  image: {
-    [theme.fn.smallerThan("sm")]: {
-      width: "7.25rem",
-      height: "7.25rem",
-      margin: 0,
-    },
-    width: "9.25rem",
-    height: "9.25rem",
-    margin: "0 1.625rem 0 0",
-    position: "absolute",
-    top: "-3rem",
-  },
-  container: {
-    margin: "0 auto",
-    backgroundColor:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[6]
-        : theme.colors.gray[0],
-    color: theme.colorScheme === "dark" ? theme.white : theme.black,
-    display: "flex",
-    position: "relative",
-    top: "-3rem",
-    width: "60%",
-    flexWrap: "wrap",
-    borderRadius: "0.75rem",
-    padding: "0.8rem",
-    [theme.fn.smallerThan("md")]: {
-      justifyContent: "center",
-      gap: "0.8rem",
-      alignItems: "center",
-      width: "90%",
-    },
-  },
-  btn: {
-    marginLeft: "auto",
-    [theme.fn.smallerThan("md")]: {
-      marginLeft: "0",
-    },
-  },
-  flexContainer: {
-    [theme.fn.smallerThan("md")]: {
-      gap: "0.25rem",
-      justifyContent: "center",
-    },
-  },
-  text: {
-    [theme.fn.smallerThan("md")]: {
-      textAlign: "center",
-    },
-  },
-  username: {
-    marginRight: "1.625rem",
-    [theme.fn.smallerThan("md")]: {
-      marginRight: "0",
-    },
-    [theme.fn.smallerThan("xl")]: {
-      marginRight: "1.625rem",
-    },
-  },
-  stack: {
-    marginLeft: "10.5rem",
-
-    [theme.fn.smallerThan("md")]: {
-      marginTop: "5.5rem",
-      marginLeft: "0",
-    },
-    [theme.fn.smallerThan("sm")]: {
-      marginTop: "3.5rem",
-      marginLeft: "0",
-    },
-  },
-
-  modal: {
-    ...theme.fn.hover({
-      cursor: "pointer",
-    }),
-  },
-}));
 const Profile = () => {
-  const { classes } = useStyles();
+  const { classes } = useStylesProfile();
   const [opened, { open, close }] = useDisclosure(false);
   const [ModalOpened, { open: openModal, close: closeModal }] =
     useDisclosure(false);
@@ -124,21 +46,21 @@ const Profile = () => {
 
   const dispatch: AppDispatch = useDispatch();
   const [token] = useCheckTokenMutation();
+  const [newPage, setNewpage] = useState(true);
 
   const user = useSelector((state: RootState) => state.auth.userInfo);
-  const {
-    data: loggeduser,
-    isFetching: isFetchingLoggeduser,
-    isLoading: isLoadingLoggeduser,
-  } = useGetLoggeduserQuery({
-    id: user?.username as string,
-  });
+  const { data: loggeduser, isFetching: isFetchingLoggeduser } =
+    useGetLoggeduserQuery({
+      id: user?.username as string,
+    });
+  const checker = data?.username === user?.username ? true : false;
+  useDocumentTitle(`${profile}/ Tweeter`);
 
   const presentFollwing = loggeduser?.following.find(
     (f) => f.username === data?.username
   );
 
-  if (isLoading || isLoadingLoggeduser)
+  if (isLoading && isFetching)
     return (
       <div
         style={{
@@ -151,8 +73,20 @@ const Profile = () => {
         <Loader variant="bars" />
       </div>
     );
-
-  if (!data) return <h1>No User found</h1>;
+  if (isFetching && !isFetchingLoggeduser && newPage)
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+        }}
+      >
+        <Loader variant="bars" />
+      </div>
+    );
+  if (!data) return <NotFoundUser />;
 
   function changeFollowers() {
     setType("followers");
@@ -197,6 +131,7 @@ const Profile = () => {
   });
 
   async function handleFollow() {
+    setNewpage(false);
     try {
       await follow({ id: data?.id as string }).unwrap();
 
@@ -223,6 +158,7 @@ const Profile = () => {
   }
 
   async function handleUnfollow() {
+    setNewpage(false);
     try {
       await unFollow({ id: data?.id as string }).unwrap();
 
@@ -247,9 +183,11 @@ const Profile = () => {
       } else toast.error("Something went wrong");
     }
   }
+
   return (
     <>
       <Modal
+        state={setNewpage}
         opened={opened}
         onClose={close}
         type={type}
@@ -294,7 +232,19 @@ const Profile = () => {
             {data?.description}
           </Text>
         </Stack>
-        {isFetching || isFetchingLoggeduser ? (
+        {user?.username === data?.username && (
+          <Button
+            variant="default"
+            size="md"
+            radius="md"
+            className={classes.btn}
+            ml="auto"
+            onClick={openModal}
+          >
+            Edit Profile
+          </Button>
+        )}
+        {isFetchingLoggeduser && isFetching && !checker ? (
           <Button
             h={40}
             size="md"
@@ -326,22 +276,11 @@ const Profile = () => {
                 variant="default"
                 size="md"
                 ml="auto"
+                className={classes.btn}
                 onClick={handleUnfollow}
                 ref={unfollowBtn}
               >
                 Following
-              </Button>
-            )}
-            {loggeduser?.username === data?.username && (
-              <Button
-                variant="default"
-                size="md"
-                radius="md"
-                className={classes.btn}
-                ml="auto"
-                onClick={openModal}
-              >
-                Edit Profile
               </Button>
             )}
           </>

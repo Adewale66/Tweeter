@@ -13,20 +13,4 @@ const validateTweetImage = async (req, res, next) => {
   } else next();
 };
 
-const validateProfileChange = async (req, res, next) => {
-  if (Object.keys(req.files).length > 0) {
-    for (const key in req.files) {
-      const validateResult = await validateMIMEType(req.files[key][0].path, {
-        originalFilename: req.files[key][0].originalname,
-        allowMimeTypes: ["image/jpeg", "image/png"],
-      });
-      console.log("validated", validateResult);
-      next();
-      if (!validateResult.ok)
-        return res.status(400).json({ message: "Invalid image type" });
-    }
-    next();
-  } else next();
-};
-
-export { validateTweetImage, validateProfileChange };
+export { validateTweetImage };

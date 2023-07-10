@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import User from "../models/users";
 import { RequestHandler } from "express";
+import { superuserId } from "../utils/config";
 
 /**
  * @desc Create a user
@@ -13,12 +14,19 @@ const CreateUser: RequestHandler = async (req, res) => {
   if (!name || !username || !password)
     return res.status(400).json({ message: "Please fill all fields" });
 
+  const superUser = await User.findById(superuserId);
+
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = new User({
     name,
     username,
     hashedPassword,
   });
+
+  user.following = user.following.concat(superUser._id);
+  superUser.followers = superUser.followers.concat(user._id);
+
+  await superUser.save();
 
   const savedUser = await user.save();
   res.status(201).json(savedUser);
@@ -71,7 +79,7 @@ const getUser: RequestHandler = async (req, res) => {
  */
 
 const getAllUsers: RequestHandler = async (req, res) => {
-  const users = await User.find({});
+  const users = await User.find({}).select("username profileimage name");
   res.status(200).json(users);
 };
 

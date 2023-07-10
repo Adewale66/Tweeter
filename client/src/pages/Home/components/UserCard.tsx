@@ -4,14 +4,14 @@ import { IconUserPlus } from "@tabler/icons-react";
 import { useRef } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   useFollowUserMutation,
   useUnFollowUserMutation,
   useCheckTokenMutation,
-} from "../../../../slices/api/userApiSlice";
-import { changeToken, removeCredentials } from "../../../../slices/authSlice";
-import { AppDispatch, RootState } from "../../../../store";
+} from "../../../slices/api/userApiSlice";
+import { changeToken, removeCredentials } from "../../../slices/authSlice";
+import { AppDispatch, RootState } from "../../../store";
 
 function UserCard({
   username,
@@ -19,12 +19,16 @@ function UserCard({
   followed,
   id,
   name,
+  close,
+  state,
 }: {
   username: string;
   profileimage: string;
   followed: boolean;
   id: string;
   name: string;
+  close: () => void;
+  state: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [follow] = useFollowUserMutation();
   const [unFollow] = useUnFollowUserMutation();
@@ -34,6 +38,7 @@ function UserCard({
 
   const dispatch: AppDispatch = useDispatch();
   const [token] = useCheckTokenMutation();
+  const navigate = useNavigate();
 
   const user = useSelector((state: RootState) => state.auth.userInfo);
 
@@ -94,7 +99,16 @@ function UserCard({
       <Flex gap={15} align="center">
         <Avatar src={profileimage} alt="wale" radius="md" />
         <Stack spacing={1}>
-          <Text fz={16} fw={500} component={Link} to={`/${username}`}>
+          <Text
+            style={{ cursor: "pointer" }}
+            fz={16}
+            fw={500}
+            onClick={() => {
+              state(true);
+              close();
+              navigate(`/${username}`);
+            }}
+          >
             {name}
           </Text>
         </Stack>

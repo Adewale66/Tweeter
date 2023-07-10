@@ -1,47 +1,17 @@
-import {
-  Box,
-  Avatar,
-  Group,
-  Text,
-  Stack,
-  Flex,
-  createStyles,
-} from "@mantine/core";
+import { Box, Avatar, Group, Text, Stack, Flex } from "@mantine/core";
+import useStylesComment from "./styles";
 
-const useStyles = createStyles((theme) => ({
-  button: {
-    border: "none",
-    padding: "0",
-    backgroundColor: "transparent",
-    ...theme.fn.hover({
-      cursor: "pointer",
-      backgroundColor:
-        theme.colorScheme === "dark" ? theme.colors.dark[7] : "white",
-    }),
-  },
-
-  comments: {
-    padding: "0.5rem",
-    backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[7] : "white",
-    borderRadius: "0.5rem",
-    width: "100%",
-  },
-}));
-
-const Comments = ({
-  comment,
-}: {
-  comment: {
-    comment: string;
-    madeBy: {
-      username: string;
-      profileimage: string;
-    };
-    createdAt: string;
+interface CommentProps {
+  comment: string;
+  madeBy: {
+    username: string;
+    profileimage: string;
   };
-}) => {
-  const { classes } = useStyles();
+  createdAt: string;
+}
+
+const Comments = ({ comment }: { comment: CommentProps }) => {
+  const { classes } = useStylesComment();
   const date = new Date(comment.createdAt);
   const options: Intl.DateTimeFormatOptions = {
     month: "long",

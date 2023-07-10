@@ -13,6 +13,7 @@ import {
   IconLogout,
   IconSun,
   IconMoonStars,
+  IconBrandGithub,
 } from "@tabler/icons-react";
 import { useLogoutMutation } from "../slices/api/logApiSlice";
 import { changeToken, removeCredentials } from "../slices/authSlice";
@@ -21,7 +22,7 @@ import { toast } from "react-hot-toast/headless";
 import { AppDispatch, RootState } from "../store";
 import { useCheckTokenMutation } from "../slices/api/userApiSlice";
 import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const User = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -30,7 +31,6 @@ const User = () => {
   const [token] = useCheckTokenMutation();
   const user = useSelector((state: RootState) => state.auth.userInfo);
   const btnRef = useRef<HTMLButtonElement>(null);
-  const navigate = useNavigate();
 
   async function logoutUser() {
     try {
@@ -51,7 +51,6 @@ const User = () => {
         } catch (error) {
           toast.error("Session expired, please log in");
           dispatch(removeCredentials());
-          navigate("/login", { replace: true });
         }
       } else toast.error("Something went wrong");
     }
@@ -80,6 +79,17 @@ const User = () => {
               onClick={() => toggleColorScheme()}
             >
               {colorScheme === "dark" ? "Light" : "Dark"} Mode
+            </Text>
+          </Group>
+          <Group>
+            <IconBrandGithub size="1.2rem" />
+            <Text
+              component={Link}
+              to="https://github.com/Adewale66/Tweeter.git"
+              target="_blank"
+              style={{ cursor: "pointer" }}
+            >
+              Source code
             </Text>
           </Group>
 

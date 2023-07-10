@@ -6,44 +6,20 @@ import {
   Image,
   Flex,
   Divider,
-  createStyles,
 } from "@mantine/core";
 
-import Interact from "./Interact";
+import Interact from "./Interact/Interact";
 import Reply from "./Reply";
-import Comments from "./Comments";
+import Comments from "./Comments/Comments";
 import { Link, useParams } from "react-router-dom";
 import { IconRefresh } from "@tabler/icons-react";
 import { TweetProps } from "../../types/user";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { useState } from "react";
+import getTimeFormat from "./utils/getTime";
+import useStylesTweets from "./TweetStyles";
 
-const useStyles = createStyles((theme) => ({
-  container: {
-    padding: "0",
-    display: "flex",
-    flexDirection: "column",
-    gap: "0.5rem",
-    marginBottom: "3rem",
-  },
-  retweeted: {
-    position: "relative",
-    backgroundColor: theme.colorScheme === "light" ? "#e0e0e0" : "#1A1B1E",
-    color: theme.colorScheme === "dark" ? theme.white : theme.colors.gray[6],
-  },
-  body: {
-    padding: "1rem",
-    display: "flex",
-    flexDirection: "column",
-    gap: "0.8rem",
-    backgroundColor:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[6]
-        : theme.colors.gray[0],
-    borderRadius: "0.5rem",
-  },
-}));
 const Tweet = ({
   tweet,
   ids,
@@ -51,19 +27,9 @@ const Tweet = ({
   tweet: TweetProps;
   ids: { id: string; retweeted: boolean; liked: boolean; saved: boolean }[];
 }) => {
-  const date = new Date(tweet.tweet.createdAt);
-  const options: Intl.DateTimeFormatOptions = {
-    month: "long",
-    day: "numeric",
-    hour12: false,
-    hour: "numeric",
-    minute: "numeric",
-    timeZone: "UTC",
-  };
-  const formatter = new Intl.DateTimeFormat("en-US", options);
-  const formattedDate = formatter.format(date);
+  const formattedDate = getTimeFormat(new Date(tweet.tweet.createdAt));
 
-  const { classes, theme } = useStyles();
+  const { classes, theme } = useStylesTweets();
   const user = useSelector((state: RootState) => state.auth.userInfo);
   const [displayReply, setDisplayReply] = useState(false);
   const { profile } = useParams();

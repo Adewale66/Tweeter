@@ -1,5 +1,5 @@
 import { Modal, Stack, Text } from "@mantine/core";
-import UserCard from "../../Home/components/whotofollow/UserCard";
+import UserCard from "../../Home/components/UserCard";
 
 interface Props {
   username: string;
@@ -15,7 +15,7 @@ const ModalFollow = ({
   type,
   followers,
   following,
-
+  state,
   name,
 }: {
   opened: boolean;
@@ -24,6 +24,7 @@ const ModalFollow = ({
   following: Props[] | undefined;
   followers: Props[] | undefined;
   name: string;
+  state: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   return (
     <Modal
@@ -46,6 +47,9 @@ const ModalFollow = ({
               profileimage={f.profileimage}
               followed={f.followed}
               name={f.name}
+              key={f.id}
+              close={onClose}
+              state={state}
             />
           ))}
         {type === "followers" &&
@@ -56,6 +60,9 @@ const ModalFollow = ({
               profileimage={f.profileimage}
               followed={f.followed}
               name={f.name}
+              key={f.id}
+              close={onClose}
+              state={state}
             />
           ))}
       </Stack>

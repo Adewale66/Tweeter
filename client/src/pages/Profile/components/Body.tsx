@@ -29,6 +29,12 @@ const useStyles = createStyles((theme) => ({
       cursor: "pointer",
     }),
   },
+  tweet: {
+    [theme.fn.smallerThan("md")]: {
+      // width: "100%",
+      flexGrow: 1,
+    },
+  },
 }));
 
 const Body = ({
@@ -128,7 +134,7 @@ const Body = ({
             Likes
           </Text>
         </Stack>
-        <div>
+        <div className={classes.tweet}>
           {tweetsDisplay &&
             homeTweets.map((tweet) => (
               <Tweet key={tweet.tweet._id} tweet={tweet} ids={ids} />

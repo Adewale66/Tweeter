@@ -7,6 +7,7 @@ import {
   Group,
   rem,
 } from "@mantine/core";
+import { useDocumentTitle } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
@@ -53,6 +54,7 @@ const useStyles = createStyles((theme) => ({
 export function NotFoundTitle() {
   const { classes } = useStyles();
   const navigate = useNavigate();
+  useDocumentTitle("Page not found/ Tweeter");
 
   return (
     <Container className={classes.root}>

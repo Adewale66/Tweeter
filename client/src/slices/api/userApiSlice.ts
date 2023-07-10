@@ -45,10 +45,6 @@ export const userApiSlice = apiSlice.injectEndpoints({
       query: () => "home",
       providesTags: ["Home"],
     }),
-    getExploreTweets: builder.query<TweetProps[], void>({
-      query: () => "explore",
-      providesTags: ["Explore"],
-    }),
     getBookmarks: builder.query<TweetProps[], void>({
       query: () => "bookmarks",
       providesTags: ["Bookmarks"],
@@ -82,6 +78,12 @@ export const userApiSlice = apiSlice.injectEndpoints({
       query: (body) => `user/${body.id}`,
       providesTags: ["LoggedUser"],
     }),
+    getAllUsers: builder.query<
+      { name: string; username: string; profileimage: string }[],
+      void
+    >({
+      query: () => "user",
+    }),
   }),
 });
 
@@ -91,9 +93,9 @@ export const {
   useUpdateUserMutation,
   useGetProfileDataQuery,
   useGetBookmarksQuery,
-  useGetExploreTweetsQuery,
   useGetHomeTweetsQuery,
   useFollowUserMutation,
   useUnFollowUserMutation,
   useGetLoggeduserQuery,
+  useGetAllUsersQuery,
 } = userApiSlice;

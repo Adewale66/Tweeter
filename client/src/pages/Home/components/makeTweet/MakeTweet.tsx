@@ -7,7 +7,6 @@ import {
   Stack,
   Text,
   Textarea,
-  createStyles,
   Popover,
   CloseButton,
   FileInput,
@@ -15,74 +14,16 @@ import {
 } from "@mantine/core";
 import { IconPhoto, IconWorld, IconUsers } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../store";
+import { AppDispatch, RootState } from "../../../../store";
 import { useState, useRef } from "react";
-import { useMakeTweetMutation } from "../../../slices/api/tweetApiSlice";
+import { useMakeTweetMutation } from "../../../../slices/api/tweetApiSlice";
 import { toast } from "react-hot-toast";
-import { changeToken, removeCredentials } from "../../../slices/authSlice";
-import { useCheckTokenMutation } from "../../../slices/api/userApiSlice";
-
-const useStyles = createStyles((theme) => ({
-  container: {
-    borderRadius: "0.5rem",
-    color: theme.colorScheme === "dark" ? theme.white : theme.black,
-
-    marginBottom: "2rem",
-    padding: "0",
-  },
-  textArea: {
-    flexGrow: 1,
-    background: "transparent",
-  },
-  input: {
-    background: "transparent",
-  },
-  flexContainer: {
-    borderRadius: "0.5rem",
-    backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.white,
-  },
-  btn: {
-    margin: "0 0 0 auto",
-    backgroundColor: "#2F80ED",
-  },
-  text: {
-    ...theme.fn.hover({
-      cursor: "pointer",
-    }),
-    color: "#2F80ED",
-  },
-
-  hiddenDesktop: {
-    [theme.fn.largerThan("sm")]: {
-      display: "none",
-    },
-  },
-  hiddenMobile: {
-    [theme.fn.smallerThan("sm")]: {
-      display: "none",
-    },
-  },
-  set: {
-    ...theme.fn.hover({
-      backgroundColor:
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[5]
-          : theme.colors.gray[1],
-      cursor: "pointer",
-      borderRadius: "0.5rem",
-    }),
-    padding: "0.5rem",
-  },
-  imgae: {
-    ...theme.fn.hover({
-      cursor: "pointer",
-    }),
-  },
-}));
+import { changeToken, removeCredentials } from "../../../../slices/authSlice";
+import { useCheckTokenMutation } from "../../../../slices/api/userApiSlice";
+import useStylesMakeTweet from "./makeTweetStyles";
 
 const MakeTweet = () => {
-  const { classes, theme } = useStyles();
+  const { classes, theme } = useStylesMakeTweet();
   const user = useSelector((state: RootState) => state.auth.userInfo);
   const [whoCanReply, setWhoCanReply] = useState<
     "Everyone" | "People you follow"

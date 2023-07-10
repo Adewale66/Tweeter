@@ -14,12 +14,6 @@ export const logApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: credentials,
       }),
-    }),
-    logout: builder.mutation<{ message: string }, void>({
-      query: () => ({
-        url: "logout",
-        method: "POST",
-      }),
       invalidatesTags: [
         "User",
         "Bookmarks",
@@ -28,6 +22,12 @@ export const logApiSlice = apiSlice.injectEndpoints({
         "LoggedUser",
         "Tweets",
       ],
+    }),
+    logout: builder.mutation<{ message: string }, void>({
+      query: () => ({
+        url: "logout",
+        method: "POST",
+      }),
     }),
   }),
 });

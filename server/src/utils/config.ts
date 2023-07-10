@@ -29,7 +29,8 @@ const upload = multer({
 const port = process.env.PORT || 8000;
 
 const NodeEnv = process.env.NODE_ENV;
+const superuserId = process.env.SUPERUSER_ID;
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-export { MONGODB_URI, port, upload, NodeEnv };
+export { MONGODB_URI, port, upload, NodeEnv, superuserId };

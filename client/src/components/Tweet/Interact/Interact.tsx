@@ -1,4 +1,4 @@
-import { Flex, Button, createStyles, Text } from "@mantine/core";
+import { Flex, Button, Text } from "@mantine/core";
 import {
   IconMessageCircle,
   IconRefresh,
@@ -12,33 +12,15 @@ import {
   useRemoveRetweetMutation,
   useSaveTweetMutation,
   useRetweetTweetMutation,
-} from "../../slices/api/tweetApiSlice";
+} from "../../../slices/api/tweetApiSlice";
 import toast from "react-hot-toast";
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useCheckTokenMutation } from "../../slices/api/userApiSlice";
-import { changeToken, removeCredentials } from "../../slices/authSlice";
-import { AppDispatch, RootState } from "../../store";
+import { useCheckTokenMutation } from "../../../slices/api/userApiSlice";
+import { changeToken, removeCredentials } from "../../../slices/authSlice";
+import { AppDispatch, RootState } from "../../../store";
+import useStylesInteract from "./interactStyles";
 
-const useStyles = createStyles((theme) => ({
-  hiddenMobile: {
-    border: "none",
-    backgroundColor: "transparent",
-    ...theme.fn.hover({
-      backgroundColor:
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[6]
-          : theme.colors.gray[1],
-    }),
-  },
-
-  textHidden: {
-    [theme.fn.smallerThan("sm")]: {
-      display: "none",
-    },
-  },
-}));
-//green red blue
 const Interact = ({
   retweeted,
   liked,
@@ -52,7 +34,7 @@ const Interact = ({
   id: string;
   setDisplayReply: (value: boolean) => void;
 }) => {
-  const { classes } = useStyles();
+  const { classes } = useStylesInteract();
   const [likeTweet] = useLikeTweetMutation();
   const [removeLike] = useRemoveLikeMutation();
   const [removeSave] = useRemoveBookmarkMutation();

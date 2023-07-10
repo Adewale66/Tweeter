@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "cd server && npm start",
-    "client": "cd client && npm run dev"
+    "client": "cd client && npm run dev",
+    "build": "cd server && rm -rf dist && cd ../client && npm run build && cp -r dist ../server && cd ../server && npm run build",
+    "deploy": "npm run build && git add . && git commit -m finishedBuild && git push",
+    "start": "cd server && npm run prod"
   },
   "keywords": [],
   "author": "",

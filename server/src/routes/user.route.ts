@@ -11,7 +11,6 @@ import {
 import asyncHandler from "express-async-handler";
 import getAccessToken from "../middleware/Token";
 import { upload } from "../utils/config";
-import { validateProfileChange } from "../middleware/imageMiddleware";
 import {
   updateProfileApiLimiter,
   followUserApiLimiter,
@@ -33,12 +32,12 @@ userRouter.put(
     { name: "banner", maxCount: 1 },
     { name: "profile", maxCount: 1 },
   ]),
-  // updateProfileApiLimiter,
+  updateProfileApiLimiter,
   asyncHandler(updateUser)
 );
 userRouter.delete("/", asyncHandler(deleteUser));
 
-// userRouter.use(followUserApiLimiter);
+userRouter.use(followUserApiLimiter);
 
 userRouter.post("/:id/follow", asyncHandler(followUser));
 

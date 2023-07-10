@@ -9,7 +9,6 @@ const AuthContext = () => {
   const user = useSelector((state: RootState) => state.auth.userInfo);
   const dispatch: AppDispatch = useDispatch();
   const [token] = useCheckTokenMutation();
-
   useEffect(() => {
     const checkToken = async () => {
       try {

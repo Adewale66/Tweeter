@@ -75,7 +75,7 @@ const Settings = ({
   }
   useEffect(() => {
     setDescription(loggeduser?.description as string);
-    setName(loggeduser?.username as string);
+    setName(loggeduser?.name as string);
   }, [loggeduser]);
 
   async function saveChanges() {

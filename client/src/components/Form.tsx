@@ -1,4 +1,4 @@
-import { useToggle, upperFirst } from "@mantine/hooks";
+import { useToggle, upperFirst, useDocumentTitle } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import {
   TextInput,
@@ -51,7 +51,7 @@ export function AuthenticationForm() {
     },
     validate: {
       password: (val) =>
-        val.length <= 1
+        val.length <= 6 && type === "register"
           ? "Password should include at least 6 characters"
           : null,
     },
@@ -61,6 +61,11 @@ export function AuthenticationForm() {
   const [register, { isLoading: isLoading2 }] = useRegisterUserMutation();
   const dispatch = useDispatch();
   const { classes } = useStyles();
+  useDocumentTitle(
+    type === "login"
+      ? "Log in to Tweeter/Tweeter"
+      : "Sign up for Tweeter/Tweeter"
+  );
 
   useEffect(() => {
     if (user) navigate("/");
@@ -127,7 +132,10 @@ export function AuthenticationForm() {
             placeholder="Username"
             value={form.values.username}
             onChange={(event) =>
-              form.setFieldValue("username", event.currentTarget.value)
+              form.setFieldValue(
+                "username",
+                event.currentTarget.value.replace(/\s/g, "")
+              )
             }
             radius="md"
           />

@@ -30,12 +30,12 @@ tweetRouter.use(getAccessToken);
 
 tweetRouter.post(
   "/",
-
+  createTweetApiLimiter,
   upload.single("file"),
   asyncHandler(validateTweetImage),
   asyncHandler(createTweet)
 );
-// tweetRouter.use(updateTweetApiLimiter);
+tweetRouter.use(updateTweetApiLimiter);
 
 tweetRouter.post("/:postId/like", asyncHandler(likeTweet));
 

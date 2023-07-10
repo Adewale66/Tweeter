@@ -3,7 +3,6 @@ import { AuthenticationForm } from "./components/Form.tsx";
 import { NotFoundTitle } from "./pages/Error.tsx";
 import Profile from "./pages/Profile/Profile.tsx";
 import Bookmarks from "./pages/Bookmarks.tsx";
-import Explore from "./pages/Explore.tsx";
 import Home from "./pages/Home/Home.tsx";
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App.tsx";
@@ -21,10 +20,6 @@ const router = createBrowserRouter([
       {
         path: "/bookmarks",
         element: <Bookmarks />,
-      },
-      {
-        path: "/explore",
-        element: <Explore />,
       },
       {
         path: "/:profile",
