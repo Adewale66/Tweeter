@@ -82,6 +82,7 @@ const Body = ({
       <Flex gap={60} wrap="wrap">
         <Stack w={250} h="fit-content" p={12} className={classes.stack}>
           <Text
+            style={{ color: tweetsDisplay ? "rgb(0, 166, 158)" : "" }}
             fz={14}
             fw={600}
             className={classes.text}
@@ -95,6 +96,7 @@ const Body = ({
             Tweets
           </Text>
           <Text
+            style={{ color: tweetsReplyDisplay ? "rgb(0, 166, 158)" : "" }}
             fz={14}
             fw={600}
             className={classes.text}
@@ -108,6 +110,7 @@ const Body = ({
             Tweets & replies
           </Text>
           <Text
+            style={{ color: mediaDisplay ? "rgb(0, 166, 158)" : "" }}
             fz={14}
             fw={600}
             className={classes.text}
@@ -121,6 +124,7 @@ const Body = ({
             Media
           </Text>
           <Text
+            style={{ color: tweetsLikedDisplay ? "rgb(0, 166, 158)" : "" }}
             fz={14}
             fw={600}
             className={classes.text}

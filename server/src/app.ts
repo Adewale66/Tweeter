@@ -10,13 +10,13 @@ import morgan from "morgan";
 import tweetRouter from "./routes/tweet.route";
 import tokenRouter from "./routes/checkToken.route";
 import navRouter from "./routes/nav.route";
-import { NodeEnv } from "./utils/config";
+import { NodeEnv, URL } from "./utils/config";
 import createHttpError from "http-errors";
 import path from "path";
 
-const app = express();
+console.log(NodeEnv);
 
-app.use("/", express.static("dist"));
+const app = express();
 
 app.use(
   cors({
@@ -31,8 +31,15 @@ app.use(
     },
     contentSecurityPolicy: {
       useDefaults: true,
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
       directives: {
-        "img-src": ["'self'", "https: data:"],
+        "img-src": [
+          "'self'",
+          "blob:",
+          "data:",
+          "http://localhost:8000",
+          `${URL}`,
+        ],
       },
     },
   })
@@ -54,9 +61,17 @@ app.use("/api", tokenRouter);
 app.use("/api/user", userRouter);
 app.use("/api/tweet", tweetRouter);
 app.use("/api", navRouter);
-app.get(/^(?!\/api).*/, (req, res) => {
-  res.sendFile("dist/index.html");
-});
+
+if (NodeEnv === "production") {
+  const __dirname = path.resolve();
+
+  app.use(express.static(path.join(__dirname, "../client/dist")));
+
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname, "../client", "dist", "index.html"))
+  );
+} else app.get("/", (req, res) => res.send("Server is running!"));
+
 app.use((req, res, next) => next(createHttpError(404, "Endpoint not found")));
 app.use(errorHandler);
 
