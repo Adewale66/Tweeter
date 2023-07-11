@@ -16,7 +16,7 @@ import path from "path";
 
 const app = express();
 
-app.use("/", express.static(path.join(__dirname, "dist")));
+app.use("/", express.static("dist"));
 
 app.use(
   cors({
@@ -55,7 +55,7 @@ app.use("/api/user", userRouter);
 app.use("/api/tweet", tweetRouter);
 app.use("/api", navRouter);
 app.get(/^(?!\/api).*/, (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile("dist/index.html");
 });
 app.use((req, res, next) => next(createHttpError(404, "Endpoint not found")));
 app.use(errorHandler);
