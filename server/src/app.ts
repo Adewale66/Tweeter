@@ -14,7 +14,7 @@ import { NodeEnv, URL } from "./utils/config";
 import createHttpError from "http-errors";
 import path from "path";
 
-console.log(NodeEnv);
+console.log(NodeEnv, "nodeenv");
 
 const app = express();
 
