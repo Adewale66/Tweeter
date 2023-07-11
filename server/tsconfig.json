@@ -8,7 +8,7 @@
     "target": "esnext",
     "moduleResolution": "node",
     "sourceMap": true,
-    "outDir": "./dist",
+    "outDir": "./build",
     "allowJs": true,
     "lib": ["dom", "es6"],
     "baseUrl": "./src",

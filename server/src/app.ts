@@ -65,10 +65,10 @@ app.use("/api", navRouter);
 if (NodeEnv === "production") {
   const __dirname = path.resolve();
 
-  app.use(express.static(path.join(__dirname, "../client/dist")));
+  app.use(express.static(path.join(__dirname, "dist")));
 
   app.get("*", (req, res) =>
-    res.sendFile(path.resolve(__dirname, "../client", "dist", "index.html"))
+    res.sendFile(path.resolve(__dirname, "dist", "index.html"))
   );
 } else app.get("/", (req, res) => res.send("Server is running!"));
 
