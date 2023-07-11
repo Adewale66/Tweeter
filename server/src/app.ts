@@ -16,6 +16,9 @@ import createHttpError from "http-errors";
 const app = express();
 
 app.use(express.static("dist"));
+app.get(/^(?!\/api).*/, (req, res) => {
+  res.sendFile("dist/index.html");
+});
 app.use(
   cors({
     credentials: true,
