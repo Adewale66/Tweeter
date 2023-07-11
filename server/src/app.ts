@@ -61,6 +61,17 @@ app.use("/api", tokenRouter);
 app.use("/api/user", userRouter);
 app.use("/api/tweet", tweetRouter);
 app.use("/api", navRouter);
+
+if (NodeEnv === "production") {
+  const __dirname = path.resolve();
+
+  app.use(express.static(path.join(__dirname, "../client/dist")));
+
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname, "../client", "dist", "index.html"))
+  );
+} else app.get("/", (req, res) => res.send("Server is running!"));
+
 app.use((req, res, next) => next(createHttpError(404, "Endpoint not found")));
 app.use(errorHandler);
 
