@@ -55,7 +55,7 @@ app.use("/api/user", userRouter);
 app.use("/api/tweet", tweetRouter);
 app.use("/api", navRouter);
 app.get(/^(?!\/api).*/, (req, res) => {
-  res.sendFile(path.join(__dirname, "dist/index.html"));
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 app.use((req, res, next) => next(createHttpError(404, "Endpoint not found")));
 app.use(errorHandler);
