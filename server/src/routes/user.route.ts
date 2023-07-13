@@ -3,7 +3,6 @@ import {
   CreateUser,
   getUser,
   getAllUsers,
-  deleteUser,
   followUser,
   updateUser,
   unFollowUser,
@@ -35,7 +34,6 @@ userRouter.put(
   updateProfileApiLimiter,
   asyncHandler(updateUser)
 );
-userRouter.delete("/", asyncHandler(deleteUser));
 
 userRouter.use(followUserApiLimiter);
 

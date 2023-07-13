@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = exports.unFollowUser = exports.followUser = exports.deleteUser = exports.getAllUsers = exports.getUser = exports.CreateUser = void 0;
+exports.updateUser = exports.unFollowUser = exports.followUser = exports.getAllUsers = exports.getUser = exports.CreateUser = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const users_1 = __importDefault(require("../models/users"));
 const config_1 = require("../utils/config");
@@ -79,17 +79,6 @@ const getAllUsers = async (req, res) => {
     res.status(200).json(users);
 };
 exports.getAllUsers = getAllUsers;
-/**
- * @desc delete  user
- * @route DELETE /
- * @access Private
- */
-const deleteUser = async (req, res) => {
-    await users_1.default.findByIdAndDelete(req.user.id);
-    res.status(200).json({ message: "User deleted" });
-    //remove cookie
-};
-exports.deleteUser = deleteUser;
 /**
  * @desc follow another user
  * @route POST /userId/follow

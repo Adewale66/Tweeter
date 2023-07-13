@@ -84,18 +84,6 @@ const getAllUsers: RequestHandler = async (req, res) => {
 };
 
 /**
- * @desc delete  user
- * @route DELETE /
- * @access Private
- */
-
-const deleteUser = async (req, res) => {
-  await User.findByIdAndDelete(req.user.id);
-  res.status(200).json({ message: "User deleted" });
-  //remove cookie
-};
-
-/**
  * @desc follow another user
  * @route POST /userId/follow
  * @access Private
@@ -202,7 +190,6 @@ export {
   CreateUser,
   getUser,
   getAllUsers,
-  deleteUser,
   followUser,
   unFollowUser,
   updateUser,

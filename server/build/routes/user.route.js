@@ -18,7 +18,6 @@ userRouter.put("/", config_1.upload.fields([
     { name: "banner", maxCount: 1 },
     { name: "profile", maxCount: 1 },
 ]), ratelimitmiddleware_1.updateProfileApiLimiter, (0, express_async_handler_1.default)(user_controller_1.updateUser));
-userRouter.delete("/", (0, express_async_handler_1.default)(user_controller_1.deleteUser));
 userRouter.use(ratelimitmiddleware_1.followUserApiLimiter);
 userRouter.post("/:id/follow", (0, express_async_handler_1.default)(user_controller_1.followUser));
 userRouter.post("/:id/unfollow", (0, express_async_handler_1.default)(user_controller_1.unFollowUser));
