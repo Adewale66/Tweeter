@@ -19,6 +19,7 @@ import {
   Text,
   MantineColor,
   AutocompleteItem,
+  Container,
 } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { forwardRef, useState } from "react";
@@ -30,7 +31,7 @@ const useStyles = createStyles((theme) => ({
     position: "absolute",
     top: "1.25rem",
     right: "4.375rem",
-    [theme.fn.smallerThan("md")]: {
+    [theme.fn.smallerThan("lg")]: {
       position: "static",
     },
   },
@@ -56,7 +57,7 @@ const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(
 );
 
 const Home = () => {
-  const { classes } = useStyles();
+  const { classes, theme } = useStyles();
   const [value, setValue] = useState("");
   const { data, isLoading } = useGetHomeTweetsQuery();
   const { data: allUsers } = useGetAllUsersQuery();
@@ -96,36 +97,40 @@ const Home = () => {
   return (
     <div style={{ position: "relative", padding: "1.25rem 0.625rem" }}>
       <div className={classes.container}>
-        <Autocomplete
-          value={value}
-          onChange={setValue}
-          icon={<IconSearch />}
-          placeholder="Search Tweeter"
-          data={result}
-          itemComponent={AutoCompleteItem}
-          mb={28}
-          radius="md"
-          onItemSubmit={searchUser}
-          limit={5}
-        />
+        <Container size={theme.breakpoints.xs}>
+          <Autocomplete
+            value={value}
+            onChange={setValue}
+            icon={<IconSearch />}
+            placeholder="Search Tweeter"
+            data={result}
+            itemComponent={AutoCompleteItem}
+            mb={28}
+            radius="md"
+            onItemSubmit={searchUser}
+            limit={5}
+          />
+        </Container>
         <Trends />
       </div>
-      <MakeTweet />
-      {isLoading && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <Loader />
-        </div>
-      )}
+      <Container size={theme.breakpoints.xs}>
+        <MakeTweet />
+        {isLoading && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Loader />
+          </div>
+        )}
 
-      {!isLoading &&
-        data?.map((t) => (
-          <Tweet key={t.tweet._id} tweet={t} ids={ids ? ids : []} />
-        ))}
+        {!isLoading &&
+          data?.map((t) => (
+            <Tweet key={t.tweet._id} tweet={t} ids={ids ? ids : []} />
+          ))}
+      </Container>
     </div>
   );
 };

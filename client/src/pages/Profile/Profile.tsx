@@ -27,6 +27,7 @@ import toast from "react-hot-toast";
 import { changeToken, removeCredentials } from "../../slices/authSlice";
 import { NotFoundUser } from "./components/NouserFound";
 import useStylesProfile from "./profileStyles";
+import LoadingState from "./components/LoadingState";
 
 const Profile = () => {
   const { classes } = useStylesProfile();
@@ -60,32 +61,8 @@ const Profile = () => {
     (f) => f.username === data?.username
   );
 
-  if (isLoading && isFetching)
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-        }}
-      >
-        <Loader variant="bars" />
-      </div>
-    );
-  if (isFetching && !isFetchingLoggeduser && newPage)
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-        }}
-      >
-        <Loader variant="bars" />
-      </div>
-    );
+  if (isLoading && isFetching) return <LoadingState />;
+  if (isFetching && !isFetchingLoggeduser && newPage) return <LoadingState />;
   if (!data) return <NotFoundUser />;
 
   function changeFollowers() {
@@ -209,7 +186,7 @@ const Profile = () => {
             <Text fz={24} fw={600} className={classes.username}>
               {data?.name}
             </Text>
-            <Flex gap={26}>
+            <Flex gap={44}>
               <Text
                 fz={12}
                 fw={600}

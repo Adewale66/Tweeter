@@ -29,7 +29,7 @@ const useStylesProfile = createStyles((theme) => ({
     padding: "0.8rem",
     [theme.fn.smallerThan("md")]: {
       justifyContent: "center",
-      gap: "0.8rem",
+      gap: "0.5rem",
       alignItems: "center",
       width: "90%",
     },
@@ -62,6 +62,7 @@ const useStylesProfile = createStyles((theme) => ({
   },
   stack: {
     marginLeft: "10.5rem",
+    width: "15rem",
 
     [theme.fn.smallerThan("md")]: {
       marginTop: "5.5rem",

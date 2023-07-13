@@ -1,12 +1,4 @@
-import {
-  Avatar,
-  Container,
-  Group,
-  Text,
-  Image,
-  Flex,
-  Divider,
-} from "@mantine/core";
+import { Avatar, Group, Text, Image, Flex, Divider } from "@mantine/core";
 
 import Interact from "./Interact/Interact";
 import Reply from "./Reply";
@@ -27,8 +19,7 @@ const Tweet = ({
   tweet: TweetProps;
   ids: { id: string; retweeted: boolean; liked: boolean; saved: boolean }[];
 }) => {
-  const formattedDate = getTimeFormat(new Date(tweet.tweet.createdAt));
-
+  const formattedDate = getTimeFormat(tweet.tweet.createdAt);
   const { classes, theme } = useStylesTweets();
   const user = useSelector((state: RootState) => state.auth.userInfo);
   const [displayReply, setDisplayReply] = useState(false);
@@ -37,7 +28,7 @@ const Tweet = ({
   const idx = tweetIds?.indexOf(tweet.tweet._id);
 
   return (
-    <Container className={classes.container} size="xs">
+    <div className={classes.container}>
       {tweet.retweeted && profile && profile === user?.username && (
         <Flex gap={5} align="center" className={classes.retweeted}>
           <IconRefresh width={20} height={20} strokeWidth={1.5} />
@@ -165,7 +156,7 @@ const Tweet = ({
             <Comments key={c.createdAt} comment={c} />
           ))}
       </div>
-    </Container>
+    </div>
   );
 };
 

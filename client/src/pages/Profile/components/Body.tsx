@@ -19,9 +19,9 @@ const useStyles = createStyles((theme) => ({
       theme.colorScheme === "dark"
         ? theme.colors.dark[6]
         : theme.colors.gray[0],
-    [theme.fn.smallerThan("md")]: {
-      flexGrow: 1,
-      marginBottom: "2rem",
+    [theme.fn.smallerThan("lg")]: {
+      marginBottom: "0.5rem",
+      width: "100%",
     },
   },
   text: {
@@ -30,9 +30,8 @@ const useStyles = createStyles((theme) => ({
     }),
   },
   tweet: {
-    [theme.fn.smallerThan("md")]: {
-      // width: "100%",
-      flexGrow: 1,
+    [theme.fn.smallerThan("lg")]: {
+      width: "100%",
     },
   },
 }));

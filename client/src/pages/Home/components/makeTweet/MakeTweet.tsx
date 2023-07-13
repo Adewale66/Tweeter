@@ -82,7 +82,7 @@ const MakeTweet = () => {
 
   return (
     <Container
-      size="xs"
+      size="fit"
       className={classes.container}
       hidden={user ? false : true}
     >

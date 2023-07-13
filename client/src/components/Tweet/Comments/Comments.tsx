@@ -1,5 +1,6 @@
 import { Box, Avatar, Group, Text, Stack, Flex } from "@mantine/core";
 import useStylesComment from "./styles";
+import getTimeFormat from "../utils/getTime";
 
 interface CommentProps {
   comment: string;
@@ -12,17 +13,8 @@ interface CommentProps {
 
 const Comments = ({ comment }: { comment: CommentProps }) => {
   const { classes } = useStylesComment();
-  const date = new Date(comment.createdAt);
-  const options: Intl.DateTimeFormatOptions = {
-    month: "long",
-    day: "numeric",
-    hour12: false,
-    hour: "numeric",
-    minute: "numeric",
-    timeZone: "UTC",
-  };
-  const formatter = new Intl.DateTimeFormat("en-US", options);
-  const formattedDate = formatter.format(date);
+  const formattedDate = getTimeFormat(comment.createdAt);
+
   return (
     <Box mt={6}>
       <Flex gap={10}>

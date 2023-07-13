@@ -15,13 +15,7 @@ function App() {
   }, [user, navigate]);
   return (
     <UiProvider>
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <div>
         <HeaderMegaMenu />
         <Outlet />
       </div>

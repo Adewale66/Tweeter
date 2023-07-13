@@ -11,7 +11,7 @@ const useStyles = createStyles((theme) => ({
     color: theme.colorScheme === "dark" ? theme.white : theme.black,
 
     marginBottom: "2rem",
-    [theme.fn.smallerThan("md")]: {
+    [theme.fn.smallerThan("85.125rem")]: {
       display: "none",
     },
   },

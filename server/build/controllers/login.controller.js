@@ -37,7 +37,7 @@ const logUser = async (req, res) => {
         .status(200)
         .cookie("refresh_token", refreshToken, {
         httpOnly: true,
-        secure: config_1.NodeEnv !== "production",
+        secure: config_1.NodeEnv !== "development",
         sameSite: "strict",
         maxAge: 864000000,
     })
