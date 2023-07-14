@@ -16,14 +16,12 @@ const ModalFollow = ({
   followers,
   following,
   state,
-  name,
 }: {
   opened: boolean;
   onClose: () => void;
   type: string;
   following: Props[] | undefined;
   followers: Props[] | undefined;
-  name: string;
   state: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   return (
@@ -34,7 +32,7 @@ const ModalFollow = ({
       centered
       title={
         <Text fz={12} fw={600}>
-          {name} {type === "following" ? "is" : ""} {type}
+          {type === "following" ? "Following" : "Followers"}
         </Text>
       }
     >

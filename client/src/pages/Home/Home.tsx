@@ -108,7 +108,6 @@ const Home = () => {
             mb={28}
             radius="md"
             onItemSubmit={searchUser}
-            limit={5}
           />
         </Container>
         <Trends />

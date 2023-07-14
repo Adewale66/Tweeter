@@ -90,7 +90,7 @@ function UserCard({
         }
       } else if (error.status === "PARSING_ERROR") {
         toast.error(error.data);
-      } else toast.error("Something went wrong");
+      } else toast.error(error.data.message);
     }
   }
 

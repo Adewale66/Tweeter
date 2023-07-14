@@ -110,6 +110,8 @@ const unFollowUser = async (req, res) => {
     const userId = req.params.id;
     if (userId === req.user.id)
         return res.status(400).json({ message: "You can't unfollow yourself" });
+    if (userId === config_1.superuserId)
+        return res.status(400).json({ message: "You can't unfollow Admin" });
     const followedUser = await users_1.default.findById(userId);
     const followingUser = await users_1.default.findById(req.user.id);
     if (!followingUser.following.map((id) => id.toString()).includes(userId))

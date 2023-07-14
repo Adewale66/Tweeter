@@ -141,6 +141,8 @@ const Profile = () => {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+      console.log(error);
+
       if (error.data.error === "token expired") {
         try {
           if (user) {
@@ -157,7 +159,7 @@ const Profile = () => {
         }
       } else if (error.status === "PARSING_ERROR") {
         toast.error(error.data);
-      } else toast.error("Something went wrong");
+      } else toast.error(error.data.message);
     }
   }
 
@@ -170,7 +172,6 @@ const Profile = () => {
         type={type}
         following={following}
         followers={followers}
-        name={data?.name}
       />
       <Image withPlaceholder src={data?.bannerImage} height={280} />
       <div className={classes.container}>

@@ -51,7 +51,7 @@ export function AuthenticationForm() {
     },
     validate: {
       password: (val) =>
-        val.length <= 6 && type === "register"
+        val.length <= 5 && type === "register"
           ? "Password should include at least 6 characters"
           : null,
     },
